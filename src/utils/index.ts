@@ -1,0 +1,1 @@
+export { processedText } from './processedText';
