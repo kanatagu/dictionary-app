@@ -1,17 +1,13 @@
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
-import { Container, Flex, Box, Button, Spinner } from '@chakra-ui/react';
-import { SearchWord, WordCard, Loading } from '../components';
+import { Container, Flex, Box, Button } from '@chakra-ui/react';
+import { SearchWord, WordCard, Loading, Error } from '../components';
 import { useRandomDictionary, useSearchDictionary } from '../hooks';
-import { ErrorPage } from '../pages';
 
 export const Home = () => {
-  const navigate = useNavigate();
   const {
     data: randomData,
     isError: isRandomError,
     refetch: randomRefetch,
+    isValidating: isRandomValidating,
   } = useRandomDictionary();
   const { data: searchData, isError: isSearchError } = useSearchDictionary();
 
@@ -19,15 +15,13 @@ export const Home = () => {
   const isError = isRandomError || isSearchError;
 
   if (isError) {
-    navigate('/error');
+    return <Error backLink={'/'} />;
   }
-
-  console.log('data', data);
 
   return (
     <Container maxW={{ base: '100%', lg: 'container.lg' }} pt='40px' pb='80px'>
       <SearchWord />
-      {!data ? (
+      {!data || isRandomValidating ? (
         <Loading />
       ) : (
         <>

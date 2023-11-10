@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { WordType } from '../type';
 import { DICTIONARY_URL } from '../const';
 import { dictionaryFetcher } from '../api';
@@ -9,19 +9,18 @@ export const useRandomDictionary = () => {
   const query = new URLSearchParams(location.search);
   const searchWord = query.get('word');
 
-  const { data, error } = useSWR<Record<'list', WordType[]>>(
-    !searchWord ? `${DICTIONARY_URL}/random` : null,
-    dictionaryFetcher
-  );
-  const { mutate } = useSWRConfig();
+  const { mutate, data, error, isValidating } = useSWRImmutable<
+    Record<'list', WordType[]>
+  >(!searchWord ? `${DICTIONARY_URL}/random` : null, dictionaryFetcher);
 
   const refetch = () => {
-    mutate(`${DICTIONARY_URL}/random`);
+    mutate();
   };
 
   return {
     data,
     isError: error,
     refetch,
+    isValidating,
   };
 };
