@@ -35,17 +35,15 @@ const App = () => {
           ],
         },
         {
-          path: 'categories',
+          path: 'category',
           element: <Categories />,
-          children: [
-            {
-              path: ':categoryId/edit',
-              element: <CategoryEdit />,
-            },
-          ],
         },
         {
-          path: 'categories/new',
+          path: '/category/:categoryId/edit',
+          element: <CategoryEdit />,
+        },
+        {
+          path: 'category/new',
           element: <CategoryCreate />,
         },
       ],

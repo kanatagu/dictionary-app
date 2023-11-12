@@ -22,7 +22,7 @@ export const Header = () => {
       >
         <CustomNavLink to='/'>HOME</CustomNavLink>
         <CustomNavLink to='/my-list'>MY LIST</CustomNavLink>
-        <CustomNavLink to='/categories'>CATEGORY</CustomNavLink>
+        <CustomNavLink to='/category'>CATEGORY</CustomNavLink>
       </Flex>
     </Box>
   );

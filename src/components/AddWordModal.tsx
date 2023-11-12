@@ -33,19 +33,19 @@ export const AddWordModal = ({ isOpen, onClose }: AddWordModalProps) => {
       isCentered
     >
       <ModalOverlay />
-      <ModalContent px={'24px'} pt={'24px'} pb={'32px'} maxW={'27.25rem'}>
+      <ModalContent px='24px' pt='24px' pb='32px' maxW='27.25rem'>
         <ModalBody p={0}>
-          <Heading fontSize={'xl'} as={'h2'}>
+          <Heading fontSize='xl' as='h2'>
             Add To My List
           </Heading>
 
-          <List display={'flex'} gap={'6px'} flexDir={'column'} mt={'24px'}>
+          <List display='flex' gap='6px' flexDir='column' mt='24px'>
             {favoriteCategories?.map((category) => (
               <ListItem
                 key={category.id}
-                display={'flex'}
-                alignItems={'center'}
-                gap={'8px'}
+                display='flex'
+                alignItems='center'
+                gap='8px'
               >
                 <Checkbox
                   value={category.id}

@@ -44,7 +44,7 @@ export const WordCard = ({ data }: WordCardProps) => {
         <VStack align='stretch' mt='20px' gap='30px'>
           <VStack align='stretch'>
             <Text fontWeight={500} fontSize='lg' overflowWrap='break-word'>
-              {processedText(example).map((text, index) =>
+              {processedText(definition).map((text, index) =>
                 text.link ? (
                   <Link
                     href={`https://www.urbandictionary.com/define.php?term=${text.text}`}
