@@ -5,7 +5,7 @@ export const CategoryCreate = () => {
   return (
     <Container maxW={{ base: '100%', lg: 'container.sm' }} pt='40px' pb='80px'>
       <Heading>Create Category</Heading>
-      <Box mt='80px'>
+      <Box mt={{ base: '30px', md: '80px' }}>
         <AddCategoryForm />
       </Box>
     </Container>

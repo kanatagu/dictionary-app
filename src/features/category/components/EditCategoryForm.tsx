@@ -11,6 +11,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useLocalStorage } from '../../../hooks';
+import { CategoryType } from '../../../types';
 
 export const EditCategoryForm = () => {
   const navigate = useNavigate();
@@ -29,11 +30,11 @@ export const EditCategoryForm = () => {
     navigate('/category');
   };
 
-  const [storedValue, setStoredValue] = useLocalStorage<
-    { id: number; name: string }[]
+  const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
+    CategoryType[]
   >('category', [], afterSubmit);
 
-  const newArray = [...storedValue];
+  const newArray = [...storedCategoriesValue];
   const storedCategory = newArray.find(
     (item) => item.id === Number(params.categoryId)
   );
@@ -41,19 +42,19 @@ export const EditCategoryForm = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const category = form.get('category') || '';
+    const inputCategory = form.get('category')?.toString() || '';
 
-    if (category === '') {
+    if (inputCategory === '') {
       setErrorMessage('Category name is required');
     }
 
-    if (category.toString().length > 30) {
+    if (inputCategory.length > 30) {
       setErrorMessage('Enter a category name less than 30 characters');
     }
 
     if (storedCategory) {
-      storedCategory.name = category.toString();
-      setStoredValue(newArray);
+      storedCategory.name = inputCategory;
+      setStoredCategoriesValue(newArray);
     }
   };
 
@@ -73,7 +74,7 @@ export const EditCategoryForm = () => {
 
       <Box textAlign='center' mt='50px'>
         <Button colorScheme='blue' size='lg' type='submit'>
-          Add Category
+          Save Category
         </Button>
       </Box>
     </Box>

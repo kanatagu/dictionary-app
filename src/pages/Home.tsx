@@ -1,6 +1,10 @@
 import { Container, Flex, Box, Button } from '@chakra-ui/react';
-import { SearchWord, WordCard, Loading, Error } from '../components';
-import { useRandomDictionary, useSearchDictionary } from '../hooks';
+import { Loading, Error } from '../components';
+import { SearchWord, WordCard } from '../features/dictionary/components';
+import {
+  useRandomDictionary,
+  useSearchDictionary,
+} from '../features/dictionary/hooks';
 
 export const Home = () => {
   const {
@@ -25,7 +29,7 @@ export const Home = () => {
         <Loading />
       ) : (
         <>
-          <Flex flexWrap='wrap' gap='30px' pt='40px' pb='60px'>
+          <Flex flexWrap='wrap' gap='40px' pt='40px' pb='60px'>
             {data.list.map((word) => (
               <WordCard key={word.defid} data={word} />
             ))}

@@ -5,7 +5,7 @@ export const CategoryEdit = () => {
   return (
     <Container maxW={{ base: '100%', lg: 'container.sm' }} pt='40px' pb='80px'>
       <Heading>Edit Category</Heading>
-      <Box mt='80px'>
+      <Box mt={{ base: '30px', md: '80px' }}>
         <EditCategoryForm />
       </Box>
     </Container>

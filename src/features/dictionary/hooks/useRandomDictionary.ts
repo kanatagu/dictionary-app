@@ -1,13 +1,12 @@
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import useSWRImmutable from 'swr/immutable';
-import { WordType } from '../type';
-import { DICTIONARY_URL } from '../const';
-import { dictionaryFetcher } from '../api';
+import { WordType } from '../../../types';
+import { DICTIONARY_URL } from '../../../const';
+import { dictionaryFetcher } from '../../../api';
 
 export const useRandomDictionary = () => {
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const searchWord = query.get('word');
+  const [searchParams] = useSearchParams();
+  const searchWord = searchParams.get('word');
 
   const { mutate, data, error, isValidating } = useSWRImmutable<
     Record<'list', WordType[]>

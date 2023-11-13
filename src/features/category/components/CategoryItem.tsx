@@ -9,13 +9,12 @@ import {
 } from '@chakra-ui/react';
 import { ConfirmModal } from '../../../components';
 import { useLocalStorage } from '../../../hooks';
+import { CategoryType } from '../../../types';
 
 type CategoryItemProps = {
-  category: {
-    id: number;
-    name: string;
-  };
+  category: CategoryType;
 };
+
 export const CategoryItem = ({ category }: CategoryItemProps) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,15 +30,15 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
     });
     onClose();
   };
-  const [storedValue, setStoredValue] = useLocalStorage<
-    { id: number; name: string }[]
+  const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
+    CategoryType[]
   >('category', [], afterSubmit);
 
   const handleDelete = () => {
-    const filteredCategory = storedValue.filter(
+    const filteredCategory = storedCategoriesValue.filter(
       (item) => item.id !== category.id
     );
-    setStoredValue(filteredCategory);
+    setStoredCategoriesValue(filteredCategory);
   };
 
   return (
@@ -56,7 +55,10 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
         <Box fontSize='lg' maxW='64%'>
           {category.name}
         </Box>
-        <Flex gap='20px' flexDir={{ base: 'column', md: 'row' }}>
+        <Flex
+          gap={{ base: '14px', md: '20px' }}
+          flexDir={{ base: 'column', md: 'row' }}
+        >
           <Button
             colorScheme='blue'
             variant='outline'
