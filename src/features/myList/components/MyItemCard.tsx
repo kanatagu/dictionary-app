@@ -6,27 +6,20 @@ import {
   VStack,
   Link,
   Flex,
-  useDisclosure,
   Tag,
   TagLeftIcon,
 } from '@chakra-ui/react';
 import { FiExternalLink, FiTag } from 'react-icons/fi';
 import { OptionButton } from '../components';
-import { WordType, MyItemType } from '../../../types';
+import { MyItemType } from '../../../types';
 import { processedText } from '../../../utils';
-// import { useLocalStorage } from '../../../hooks';
 
 type MyItemCardProps = {
   item: MyItemType;
 };
 
 export const MyItemCard = ({ item }: MyItemCardProps) => {
-  const { id, memo, word, category } = item;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  // const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-  //   MyItemType[]
-  // >('myItem', []);
+  const { memo, word, category } = item;
 
   return (
     <Box
@@ -43,7 +36,7 @@ export const MyItemCard = ({ item }: MyItemCardProps) => {
         >
           {word.word}
         </Heading>
-        <OptionButton />
+        <OptionButton myItem={item} />
       </Flex>
       <VStack align='stretch' mt='20px' gap={{ base: '20px', md: '30px' }}>
         <VStack align='stretch'>

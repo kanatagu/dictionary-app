@@ -35,25 +35,28 @@ export const EditCategoryForm = () => {
   >('category', [], afterSubmit);
 
   const newArray = [...storedCategoriesValue];
-  const storedCategory = newArray.find(
+  const storedCategoryItem = newArray.find(
     (item) => item.id === Number(params.categoryId)
   );
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    setErrorMessage('');
     const form = new FormData(e.currentTarget);
     const inputCategory = form.get('category')?.toString() || '';
 
     if (inputCategory === '') {
       setErrorMessage('Category name is required');
+      return;
     }
 
     if (inputCategory.length > 30) {
       setErrorMessage('Enter a category name less than 30 characters');
+      return;
     }
 
-    if (storedCategory) {
-      storedCategory.name = inputCategory;
+    if (storedCategoryItem) {
+      storedCategoryItem.name = inputCategory;
       setStoredCategoriesValue(newArray);
     }
   };
@@ -67,14 +70,14 @@ export const EditCategoryForm = () => {
           name='category'
           bgColor={'gray.700'}
           placeholder='category'
-          defaultValue={storedCategory?.name}
+          defaultValue={storedCategoryItem?.name}
         />
         <FormErrorMessage>{errorMessage}</FormErrorMessage>
       </FormControl>
 
       <Box textAlign='center' mt='50px'>
         <Button colorScheme='blue' size='lg' type='submit'>
-          Save Category
+          Save Changes
         </Button>
       </Box>
     </Box>

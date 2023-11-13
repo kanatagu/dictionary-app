@@ -20,7 +20,6 @@ export const MyItemList = () => {
       const hasCategory = item.category.some(
         (itemCategory) => itemCategory.id === Number(category)
       );
-      console.log('hasCategory', hasCategory);
       return hasCategory;
     });
 

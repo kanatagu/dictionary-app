@@ -18,7 +18,6 @@ export const Sidebar = () => {
   const isMobile = useIsMobile('lg');
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log('isMobile', isMobile);
   return (
     <>
       {isMobile ? (

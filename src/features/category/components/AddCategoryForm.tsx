@@ -34,15 +34,18 @@ export const AddCategoryForm = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    setErrorMessage('');
     const form = new FormData(e.currentTarget);
     const inputCategory = form.get('category')?.toString() || '';
 
     if (inputCategory === '') {
       setErrorMessage('Category name is required');
+      return;
     }
 
     if (inputCategory.length > 30) {
       setErrorMessage('Enter a category name less than 30 characters');
+      return;
     }
 
     const id = storedCategoriesValue.length

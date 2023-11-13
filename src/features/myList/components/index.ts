@@ -1,3 +1,4 @@
+export { EditWordModal } from './EditWordModal';
 export { MyItemCard } from './MyItemCard';
 export { MyItemList } from './MyItemList';
 export { NavList } from './NavList';

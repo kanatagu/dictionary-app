@@ -34,6 +34,7 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
     CategoryType[]
   >('category', [], afterSubmit);
 
+  // TODO mylistのitemも消す
   const handleDelete = () => {
     const filteredCategory = storedCategoriesValue.filter(
       (item) => item.id !== category.id

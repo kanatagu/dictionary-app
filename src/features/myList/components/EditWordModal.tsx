@@ -19,23 +19,29 @@ import {
 } from '@chakra-ui/react';
 import { FiChevronRight } from 'react-icons/fi';
 import { useLocalStorage } from '../../../hooks';
-import { MyItemType, CategoryType, WordType } from '../../../types';
+import { MyItemType, CategoryType } from '../../../types';
 
-export type AddWordModalProps = {
+export type EditWordModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  data: WordType;
+  item: MyItemType;
 };
 
-export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
+export const EditWordModal = ({
+  isOpen,
+  onClose,
+  item,
+}: EditWordModalProps) => {
   const toast = useToast();
   const [errorMessage, setErrorMessage] = useState('');
-  const [checkedCategory, setCheckedCategory] = useState<CategoryType[]>([]);
+  const [checkedCategory, setCheckedCategory] = useState<CategoryType[]>(
+    item.category
+  );
 
   const afterSubmit = () => {
     toast({
       title: 'Success!',
-      description: 'Added to my list',
+      description: 'Saved changes.',
       status: 'success',
       duration: 3000,
       isClosable: true,
@@ -50,6 +56,13 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
   const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
     MyItemType[]
   >('myItem', [], afterSubmit);
+
+  const newArray = [...storedMyItemsValue];
+  const storedMyItem = newArray.find((storedItem) => storedItem.id === item.id);
+
+  const isFavoriteThisCategory = (categoryId: number) => {
+    return item.category.some((category) => category.id === categoryId);
+  };
 
   const clickHandler = (category: CategoryType) => {
     const foundItem = checkedCategory.some(
@@ -76,18 +89,11 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
       return;
     }
 
-    const id = storedMyItemsValue.length
-      ? storedMyItemsValue.slice(-1)[0].id + 1
-      : 1;
-
-    const newData: MyItemType = {
-      id,
-      memo: inputMemo,
-      word: data,
-      category: checkedCategory,
-    };
-
-    setStoredMyItemsValue([...storedMyItemsValue, newData]);
+    if (storedMyItem) {
+      storedMyItem.memo = inputMemo;
+      storedMyItem.category = checkedCategory;
+      setStoredMyItemsValue(newArray);
+    }
   };
 
   return (
@@ -105,7 +111,12 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
             <Box as='form' onSubmit={handleSubmit}>
               <FormControl isInvalid={!!errorMessage}>
                 <FormLabel>Memo</FormLabel>
-                <Textarea name='memo' bgColor={'gray.700'} placeholder='memo' />
+                <Textarea
+                  name='memo'
+                  bgColor={'gray.700'}
+                  placeholder='memo'
+                  defaultValue={item.memo}
+                />
                 <FormErrorMessage>{errorMessage}</FormErrorMessage>
               </FormControl>
 
@@ -120,6 +131,7 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
                     <Checkbox
                       value={category.id}
                       size='lg'
+                      defaultChecked={isFavoriteThisCategory(category.id)}
                       onChange={() => clickHandler(category)}
                     >
                       {category.name}
@@ -129,7 +141,7 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
               </List>
               <Box textAlign='center' mt='50px'>
                 <Button colorScheme='blue' size='lg' type='submit'>
-                  Add To My List
+                  Save Changes
                 </Button>
               </Box>
             </Box>
