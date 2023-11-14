@@ -4,4 +4,5 @@
 
 - Make BE Server
 - Fix TODO Type
-- Search from My LIST 
+- Search from My LIST
+- Refactor form validation

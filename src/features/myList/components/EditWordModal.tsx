@@ -31,12 +31,17 @@ export const EditWordModal = ({
   item,
 }: EditWordModalProps) => {
   const {
-    errorMessage,
+    errorMessages,
     editMyItem,
     clickHandler,
     isFavoriteThisCategory,
     storedCategoriesValue,
   } = useEditMyItem(item, onClose);
+
+  const memoError = errorMessages.find((error) => error.label === 'memo');
+  const categoryError = errorMessages.find(
+    (error) => error.label === 'category'
+  );
 
   return (
     <Modal
@@ -51,7 +56,7 @@ export const EditWordModal = ({
         <ModalBody p={0}>
           {storedCategoriesValue.length ? (
             <Box as='form' onSubmit={editMyItem}>
-              <FormControl isInvalid={!!errorMessage}>
+              <FormControl isInvalid={!!memoError}>
                 <FormLabel>Memo</FormLabel>
                 <Textarea
                   name='memo'
@@ -59,28 +64,32 @@ export const EditWordModal = ({
                   placeholder='memo'
                   defaultValue={item.memo}
                 />
-                <FormErrorMessage>{errorMessage}</FormErrorMessage>
+                <FormErrorMessage>{memoError?.message}</FormErrorMessage>
               </FormControl>
 
-              <List display='flex' gap='10px' flexDir='column' mt='24px'>
-                {storedCategoriesValue?.map((category) => (
-                  <ListItem
-                    key={category.id}
-                    display='flex'
-                    alignItems='center'
-                    gap='8px'
-                  >
-                    <Checkbox
-                      value={category.id}
-                      size='lg'
-                      defaultChecked={isFavoriteThisCategory(category.id)}
-                      onChange={() => clickHandler(category)}
+              <FormControl isInvalid={!!categoryError}>
+                <List display='flex' gap='10px' flexDir='column' mt='24px'>
+                  {storedCategoriesValue?.map((category) => (
+                    <ListItem
+                      key={category.id}
+                      display='flex'
+                      alignItems='center'
+                      gap='8px'
                     >
-                      {category.name}
-                    </Checkbox>
-                  </ListItem>
-                ))}
-              </List>
+                      <Checkbox
+                        value={category.id}
+                        size='lg'
+                        defaultChecked={isFavoriteThisCategory(category.id)}
+                        onChange={() => clickHandler(category)}
+                      >
+                        {category.name}
+                      </Checkbox>
+                    </ListItem>
+                  ))}
+                </List>
+                <FormErrorMessage>{categoryError?.message}</FormErrorMessage>
+              </FormControl>
+
               <Box textAlign='center' mt='50px'>
                 <Button colorScheme='blue' size='lg' type='submit'>
                   Save Changes

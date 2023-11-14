@@ -5,7 +5,9 @@ import { MyItemType, CategoryType, WordType } from '../../../types';
 
 export const useAddWord = (onClose: () => void, data: WordType) => {
   const toast = useToast();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessages, setErrorMessages] = useState<
+    { message: string; label: string }[]
+  >([]);
   const [checkedCategory, setCheckedCategory] = useState<CategoryType[]>([]);
 
   const afterSubmit = () => {
@@ -39,12 +41,26 @@ export const useAddWord = (onClose: () => void, data: WordType) => {
 
   const addWord: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessages([]);
     const form = new FormData(e.currentTarget);
     const inputMemo = form.get('memo')?.toString() || '';
 
-    if (inputMemo.length > 100) {
-      setErrorMessage('Enter a memo less than 100 characters');
+    if (inputMemo.length > 100 || !checkedCategory.length) {
+      if (inputMemo.length > 100) {
+        const memoError = {
+          message: 'Enter a memo less than 100 characters',
+          label: 'memo',
+        };
+        setErrorMessages((currentItem) => [...currentItem, memoError]);
+      }
+
+      if (!checkedCategory.length) {
+        const categoryError = {
+          message: 'Select at lease one category',
+          label: 'category',
+        };
+        setErrorMessages((currentItem) => [...currentItem, categoryError]);
+      }
       return;
     }
 
@@ -63,7 +79,7 @@ export const useAddWord = (onClose: () => void, data: WordType) => {
   };
 
   return {
-    errorMessage,
+    errorMessages,
     clickHandler,
     addWord,
   };

@@ -27,7 +27,12 @@ export type AddWordModalProps = {
 };
 
 export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
-  const { errorMessage, clickHandler, addWord } = useAddWord(onClose, data);
+  const { errorMessages, clickHandler, addWord } = useAddWord(onClose, data);
+
+  const memoError = errorMessages.find((error) => error.label === 'memo');
+  const categoryError = errorMessages.find(
+    (error) => error.label === 'category'
+  );
 
   const [storedCategoriesValue, _] = useLocalStorage<
     { id: number; name: string }[]
@@ -46,30 +51,34 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
         <ModalBody p={0}>
           {storedCategoriesValue.length ? (
             <Box as='form' onSubmit={addWord}>
-              <FormControl isInvalid={!!errorMessage}>
+              <FormControl isInvalid={!!memoError}>
                 <FormLabel>Memo</FormLabel>
                 <Textarea name='memo' bgColor={'gray.700'} placeholder='memo' />
-                <FormErrorMessage>{errorMessage}</FormErrorMessage>
+                <FormErrorMessage>{memoError?.message}</FormErrorMessage>
               </FormControl>
 
-              <List display='flex' gap='10px' flexDir='column' mt='24px'>
-                {storedCategoriesValue?.map((category) => (
-                  <ListItem
-                    key={category.id}
-                    display='flex'
-                    alignItems='center'
-                    gap='8px'
-                  >
-                    <Checkbox
-                      value={category.id}
-                      size='lg'
-                      onChange={() => clickHandler(category)}
+              <FormControl isInvalid={!!categoryError}>
+                <List display='flex' gap='10px' flexDir='column' mt='24px'>
+                  {storedCategoriesValue?.map((category) => (
+                    <ListItem
+                      key={category.id}
+                      display='flex'
+                      alignItems='center'
+                      gap='8px'
                     >
-                      {category.name}
-                    </Checkbox>
-                  </ListItem>
-                ))}
-              </List>
+                      <Checkbox
+                        value={category.id}
+                        size='lg'
+                        onChange={() => clickHandler(category)}
+                      >
+                        {category.name}
+                      </Checkbox>
+                    </ListItem>
+                  ))}
+                </List>
+                <FormErrorMessage>{categoryError?.message}</FormErrorMessage>
+              </FormControl>
+
               <Box textAlign='center' mt='50px'>
                 <Button colorScheme='blue' size='lg' type='submit'>
                   Add To My List

@@ -5,7 +5,9 @@ import { MyItemType, CategoryType } from '../../../types';
 
 export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
   const toast = useToast();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessages, setErrorMessages] = useState<
+    { message: string; label: string }[]
+  >([]);
   const [checkedCategory, setCheckedCategory] = useState<CategoryType[]>(
     item.category
   );
@@ -52,12 +54,26 @@ export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
 
   const editMyItem: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessages([]);
     const form = new FormData(e.currentTarget);
     const inputMemo = form.get('memo')?.toString() || '';
 
-    if (inputMemo.length > 100) {
-      setErrorMessage('Enter a memo less than 100 characters');
+    if (inputMemo.length > 100 || !checkedCategory.length) {
+      if (inputMemo.length > 100) {
+        const memoError = {
+          message: 'Enter a memo less than 100 characters',
+          label: 'memo',
+        };
+        setErrorMessages((currentItem) => [...currentItem, memoError]);
+      }
+
+      if (!checkedCategory.length) {
+        const categoryError = {
+          message: 'Select at lease one category',
+          label: 'category',
+        };
+        setErrorMessages((currentItem) => [...currentItem, categoryError]);
+      }
       return;
     }
 
@@ -69,7 +85,7 @@ export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
   };
 
   return {
-    errorMessage,
+    errorMessages,
     editMyItem,
     clickHandler,
     isFavoriteThisCategory,
