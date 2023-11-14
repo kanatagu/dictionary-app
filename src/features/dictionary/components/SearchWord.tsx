@@ -26,7 +26,6 @@ export const SearchWord = ({ ...props }: ChakraInputProps) => {
   return (
     <InputGroup>
       <ChakraInput
-        // ref={ref}
         ref={inputRef}
         {...props}
         placeholder='Search the word'

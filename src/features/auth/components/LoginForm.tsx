@@ -7,9 +7,13 @@ import {
   Button,
   Input,
 } from '@chakra-ui/react';
+import { useCheckUserPool } from '../hooks';
+import { useAuth } from '../../../hooks';
 
 export const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
+  const { isUserInPool } = useCheckUserPool();
+  const { setUser } = useAuth();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -24,6 +28,13 @@ export const LoginForm = () => {
       setErrorMessage('Enter a valid email address');
       return;
     }
+
+    if (!isUserInPool(inputEmail)) {
+      setErrorMessage('Email address is not registered');
+      return;
+    }
+
+    setUser({ id: '1', email: inputEmail });
   };
 
   return (

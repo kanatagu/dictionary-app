@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { ConfirmModal } from '../../../components';
 import { useLocalStorage } from '../../../hooks';
-import { CategoryType } from '../../../types';
+import { CategoryType, MyItemType } from '../../../types';
 
 type CategoryItemProps = {
   category: CategoryType;
@@ -34,8 +34,34 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
     CategoryType[]
   >('category', [], afterSubmit);
 
-  // TODO mylistのitemも消す
+  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
+    MyItemType[]
+  >('myItem', []);
+
   const handleDelete = () => {
+    let newArray = [...storedMyItemsValue];
+
+    // Delete category from myItems
+    newArray.forEach((myItem) => {
+      const updatedCategoryItems = myItem.category.filter(
+        (categoryItem) => categoryItem.id !== category.id
+      );
+
+      // If only this category is attached, delete the entire item
+      if (updatedCategoryItems.length === 0) {
+        const deletedItemsArray = newArray.filter(
+          (item) => item.id !== myItem.id
+        );
+
+        newArray = deletedItemsArray;
+      } else {
+        myItem.category = updatedCategoryItems;
+      }
+    });
+
+    setStoredMyItemsValue(newArray);
+
+    // Delete category
     const filteredCategory = storedCategoriesValue.filter(
       (item) => item.id !== category.id
     );
@@ -83,7 +109,8 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
       <ConfirmModal
         isOpen={isOpen}
         onClose={onClose}
-        text={'Are you sure you want to Delete this category?'}
+        text={'Are you sure you want to Delete this category? '}
+        subText={'*The Words in this category will also be deleted.'}
         submitButton={
           <Button colorScheme='red' color='red.600' onClick={handleDelete}>
             Delete

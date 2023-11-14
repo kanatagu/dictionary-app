@@ -14,12 +14,14 @@ type ConfirmModalProps = {
   onClose: () => void;
   submitButton: React.ReactNode;
   text: string;
+  subText?: string;
 };
 export const ConfirmModal = ({
   isOpen,
   onClose,
   submitButton,
   text,
+  subText,
 }: ConfirmModalProps) => {
   return (
     <Modal
@@ -36,6 +38,11 @@ export const ConfirmModal = ({
           <Text fontSize='xl' fontWeight={700}>
             {text}
           </Text>
+          {subText && (
+            <Text fontSize='md' fontWeight={400} mt='30px'>
+              {subText}
+            </Text>
+          )}
           <Flex mt='30px' gap='20px' justifyContent='flex-end'>
             {submitButton}
             <Button onClick={onClose}>Cancel</Button>

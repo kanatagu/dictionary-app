@@ -11,7 +11,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useLocalStorage } from '../../../hooks';
-import { CategoryType } from '../../../types';
+import { CategoryType, MyItemType } from '../../../types';
 
 export const EditCategoryForm = () => {
   const navigate = useNavigate();
@@ -33,6 +33,10 @@ export const EditCategoryForm = () => {
   const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
     CategoryType[]
   >('category', [], afterSubmit);
+
+  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
+    MyItemType[]
+  >('myItem', []);
 
   const newArray = [...storedCategoriesValue];
   const storedCategoryItem = newArray.find(
@@ -59,6 +63,18 @@ export const EditCategoryForm = () => {
       storedCategoryItem.name = inputCategory;
       setStoredCategoriesValue(newArray);
     }
+
+    // Update category name in myItems
+    const newItemsArray = storedMyItemsValue.map((myItem) => {
+      myItem.category.forEach((categoryItem) => {
+        if (categoryItem.id === storedCategoryItem?.id) {
+          categoryItem.name = inputCategory;
+        }
+      });
+      return myItem;
+    });
+
+    setStoredMyItemsValue(newItemsArray);
   };
 
   return (

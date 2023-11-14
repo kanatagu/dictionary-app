@@ -7,12 +7,14 @@ import {
   Button,
   Input,
 } from '@chakra-ui/react';
+import { useCheckUserPool } from '../hooks';
 import { useAuth } from '../../../hooks';
 
 export const SignUpForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const { setUser } = useAuth();
+  const { isUserInPool, addUserToPool } = useCheckUserPool();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -28,6 +30,12 @@ export const SignUpForm = () => {
       return;
     }
 
+    if (isUserInPool(inputEmail)) {
+      setErrorMessage('Email already exists');
+      return;
+    }
+
+    addUserToPool(inputEmail);
     setUser({ id: '1', email: inputEmail });
   };
 
