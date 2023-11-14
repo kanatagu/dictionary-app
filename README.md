@@ -6,3 +6,4 @@
 - Fix TODO Type
 - Search from My LIST
 - Refactor form validation
+- Delete ChakraUI dark mode
