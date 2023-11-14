@@ -1,4 +1,3 @@
-import { useState, FormEventHandler } from 'react';
 import {
   FormControl,
   FormLabel,
@@ -7,38 +6,13 @@ import {
   Button,
   Input,
 } from '@chakra-ui/react';
-import { useCheckUserPool } from '../hooks';
-import { useAuth } from '../../../hooks';
+import { useLogin } from '../hooks';
 
 export const LoginForm = () => {
-  const [errorMessage, setErrorMessage] = useState('');
-  const { isUserInPool } = useCheckUserPool();
-  const { setUser } = useAuth();
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    const form = new FormData(e.currentTarget);
-    const inputEmail = form.get('email')?.toString() || '';
-
-    const emailPattern =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
-    if (!emailPattern.test(inputEmail)) {
-      setErrorMessage('Enter a valid email address');
-      return;
-    }
-
-    if (!isUserInPool(inputEmail)) {
-      setErrorMessage('Email address is not registered');
-      return;
-    }
-
-    setUser({ id: '1', email: inputEmail });
-  };
+  const { errorMessage, login } = useLogin();
 
   return (
-    <Box as='form' onSubmit={handleSubmit}>
+    <Box as='form' onSubmit={login}>
       <FormControl isInvalid={!!errorMessage}>
         <FormLabel>email</FormLabel>
         <Input

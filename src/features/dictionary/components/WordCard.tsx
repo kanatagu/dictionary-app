@@ -12,37 +12,35 @@ import {
 import { FiExternalLink } from 'react-icons/fi';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { AddWordModal } from '../components';
-import { WordType, MyItemType } from '../../../types';
+import { useDeleteWord } from '../hooks';
+import { WordType } from '../../../types';
 import { processedText } from '../../../utils';
-import { useLocalStorage } from '../../../hooks';
+import { ConfirmModal } from '../../../components';
 
 type WordCardProps = {
   data: WordType;
 };
 
 export const WordCard = ({ data }: WordCardProps) => {
-  const { defid, word, definition, example, permalink } = data;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { word, definition, example, permalink } = data;
+  const {
+    isOpen: isAddOpen,
+    onOpen: onAddOpen,
+    onClose: onAddClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
 
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', []);
-
-  const handleDelete = () => {
-    const filteredMyItems = storedMyItemsValue.filter(
-      (item) => item.word.defid !== defid
-    );
-    setStoredMyItemsValue(filteredMyItems);
-  };
+  const { deleteWord, isInMyItem } = useDeleteWord(onDeleteClose, data);
 
   const getHeartIcon = () => {
-    const foundItem = storedMyItemsValue.some(
-      (item) => item.word.defid === defid
-    );
-    return foundItem ? (
-      <AiFillHeart onClick={handleDelete} size='100%' />
+    return isInMyItem ? (
+      <AiFillHeart onClick={onDeleteOpen} size='100%' />
     ) : (
-      <AiOutlineHeart onClick={onOpen} size='100%' />
+      <AiOutlineHeart onClick={onAddOpen} size='100%' />
     );
   };
 
@@ -146,7 +144,22 @@ export const WordCard = ({ data }: WordCardProps) => {
         </VStack>
       </Box>
 
-      {isOpen && <AddWordModal isOpen={isOpen} onClose={onClose} data={data} />}
+      {isAddOpen && (
+        <AddWordModal isOpen={isAddOpen} onClose={onAddClose} data={data} />
+      )}
+
+      {isDeleteOpen && (
+        <ConfirmModal
+          isOpen={isDeleteOpen}
+          onClose={onDeleteClose}
+          text={'Are you sure you want to Delete this word from My List?'}
+          submitButton={
+            <Button colorScheme='red' color='red.600' onClick={deleteWord}>
+              Delete
+            </Button>
+          }
+        />
+      )}
     </>
   );
 };

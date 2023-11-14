@@ -15,6 +15,7 @@ export const CustomNavLink = ({ children, to }: CustomNavLinkProps) => {
     path: resolved.pathname,
     end: true,
   });
+
   return (
     <ChakraLink
       as={ReactRouterLink}

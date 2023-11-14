@@ -4,13 +4,12 @@ import {
   MenuList,
   MenuItem,
   useDisclosure,
-  useToast,
   Button,
 } from '@chakra-ui/react';
 import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { EditWordModal } from '../components';
+import { useDeleteMyItem } from '../hooks';
 import { ConfirmModal } from '../../../components';
-import { useLocalStorage } from '../../../hooks';
 import { MyItemType } from '../../../types';
 
 type OptionButtonProps = {
@@ -28,29 +27,8 @@ export const OptionButton = ({ myItem }: OptionButtonProps) => {
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
-  const toast = useToast();
 
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Deleted the word.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onDeleteClose();
-  };
-
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', [], afterSubmit);
-
-  const handleDelete = () => {
-    const filteredMyList = storedMyItemsValue.filter(
-      (item) => item.id !== myItem.id
-    );
-    setStoredMyItemsValue(filteredMyList);
-  };
+  const { deleteMyItem } = useDeleteMyItem(myItem, onDeleteClose);
 
   return (
     <>
@@ -75,7 +53,7 @@ export const OptionButton = ({ myItem }: OptionButtonProps) => {
         onClose={onDeleteClose}
         text={'Are you sure you want to Delete this word?'}
         submitButton={
-          <Button colorScheme='red' color='red.600' onClick={handleDelete}>
+          <Button colorScheme='red' color='red.600' onClick={deleteMyItem}>
             Delete
           </Button>
         }

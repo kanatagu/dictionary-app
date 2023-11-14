@@ -3,6 +3,7 @@ import { useAuth } from '../hooks';
 
 export const AccountPage = () => {
   const { user } = useAuth();
+  
   return (
     <Container maxW={{ base: '100%', lg: 'container.sm' }} pt='40px' pb='80px'>
       <Heading>Account Info</Heading>

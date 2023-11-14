@@ -1,5 +1,3 @@
-import { useState, FormEventHandler } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   FormControl,
   FormLabel,
@@ -7,59 +5,14 @@ import {
   Box,
   Button,
   Input,
-  useToast,
 } from '@chakra-ui/react';
-import { useLocalStorage } from '../../../hooks';
-import { CategoryType } from '../../../types';
+import { useAddCategory } from '../hooks';
 
 export const AddCategoryForm = () => {
-  const navigate = useNavigate();
-  const toast = useToast();
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Created category name.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    navigate('/category');
-  };
-
-  const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
-    CategoryType[]
-  >('category', [], afterSubmit);
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    const form = new FormData(e.currentTarget);
-    const inputCategory = form.get('category')?.toString() || '';
-
-    if (inputCategory === '') {
-      setErrorMessage('Category name is required');
-      return;
-    }
-
-    if (inputCategory.length > 30) {
-      setErrorMessage('Enter a category name less than 30 characters');
-      return;
-    }
-
-    const id = storedCategoriesValue.length
-      ? storedCategoriesValue.slice(-1)[0].id + 1
-      : 1;
-
-    setStoredCategoriesValue([
-      ...storedCategoriesValue,
-      { id, name: inputCategory },
-    ]);
-  };
+  const { errorMessage, addCategory } = useAddCategory();
 
   return (
-    <Box as='form' onSubmit={handleSubmit}>
+    <Box as='form' onSubmit={addCategory}>
       <FormControl isInvalid={!!errorMessage}>
         <FormLabel>Category Name</FormLabel>
         <Input

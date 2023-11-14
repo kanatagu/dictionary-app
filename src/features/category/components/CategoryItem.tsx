@@ -1,15 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import {
-  Flex,
-  Box,
-  Button,
-  ListItem,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
+import { Flex, Box, Button, ListItem, useDisclosure } from '@chakra-ui/react';
+import { useDeleteCategory } from '../hooks';
 import { ConfirmModal } from '../../../components';
-import { useLocalStorage } from '../../../hooks';
-import { CategoryType, MyItemType } from '../../../types';
+import { CategoryType } from '../../../types';
 
 type CategoryItemProps = {
   category: CategoryType;
@@ -18,55 +11,7 @@ type CategoryItemProps = {
 export const CategoryItem = ({ category }: CategoryItemProps) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
-
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Deleted category name.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-  };
-  const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
-    CategoryType[]
-  >('category', [], afterSubmit);
-
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', []);
-
-  const handleDelete = () => {
-    let newArray = [...storedMyItemsValue];
-
-    // Delete category from myItems
-    newArray.forEach((myItem) => {
-      const updatedCategoryItems = myItem.category.filter(
-        (categoryItem) => categoryItem.id !== category.id
-      );
-
-      // If only this category is attached, delete the entire item
-      if (updatedCategoryItems.length === 0) {
-        const deletedItemsArray = newArray.filter(
-          (item) => item.id !== myItem.id
-        );
-
-        newArray = deletedItemsArray;
-      } else {
-        myItem.category = updatedCategoryItems;
-      }
-    });
-
-    setStoredMyItemsValue(newArray);
-
-    // Delete category
-    const filteredCategory = storedCategoriesValue.filter(
-      (item) => item.id !== category.id
-    );
-    setStoredCategoriesValue(filteredCategory);
-  };
+  const { deleteCategory } = useDeleteCategory(category, onClose);
 
   return (
     <>
@@ -112,7 +57,7 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
         text={'Are you sure you want to Delete this category? '}
         subText={'*The Words in this category will also be deleted.'}
         submitButton={
-          <Button colorScheme='red' color='red.600' onClick={handleDelete}>
+          <Button colorScheme='red' color='red.600' onClick={deleteCategory}>
             Delete
           </Button>
         }

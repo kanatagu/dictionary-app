@@ -1,4 +1,3 @@
-import { useState, FormEventHandler } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import {
   Box,
@@ -15,11 +14,11 @@ import {
   Textarea,
   Button,
   Text,
-  useToast,
 } from '@chakra-ui/react';
 import { FiChevronRight } from 'react-icons/fi';
+import { useAddWord } from '../hooks';
 import { useLocalStorage } from '../../../hooks';
-import { MyItemType, CategoryType, WordType } from '../../../types';
+import { WordType } from '../../../types';
 
 export type AddWordModalProps = {
   isOpen: boolean;
@@ -28,67 +27,11 @@ export type AddWordModalProps = {
 };
 
 export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
-  const toast = useToast();
-  const [errorMessage, setErrorMessage] = useState('');
-  const [checkedCategory, setCheckedCategory] = useState<CategoryType[]>([]);
-
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Added to my list',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-  };
+  const { errorMessage, clickHandler, addWord } = useAddWord(onClose, data);
 
   const [storedCategoriesValue, _] = useLocalStorage<
     { id: number; name: string }[]
   >('category', []);
-
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', [], afterSubmit);
-
-  const clickHandler = (category: CategoryType) => {
-    const foundItem = checkedCategory.some(
-      (checkedItem) => checkedItem.id === category.id
-    );
-
-    if (foundItem) {
-      setCheckedCategory(
-        checkedCategory.filter((checkedItem) => checkedItem.id !== category.id)
-      );
-    } else {
-      setCheckedCategory([...checkedCategory, category]);
-    }
-  };
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    const form = new FormData(e.currentTarget);
-    const inputMemo = form.get('memo')?.toString() || '';
-
-    if (inputMemo.length > 100) {
-      setErrorMessage('Enter a memo less than 100 characters');
-      return;
-    }
-
-    const id = storedMyItemsValue.length
-      ? storedMyItemsValue.slice(-1)[0].id + 1
-      : 1;
-
-    const newData: MyItemType = {
-      id,
-      memo: inputMemo,
-      word: data,
-      category: checkedCategory,
-    };
-
-    setStoredMyItemsValue([...storedMyItemsValue, newData]);
-  };
 
   return (
     <Modal
@@ -102,7 +45,7 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
       <ModalContent px='24px' pt='24px' pb='32px' maxW='27.25rem'>
         <ModalBody p={0}>
           {storedCategoriesValue.length ? (
-            <Box as='form' onSubmit={handleSubmit}>
+            <Box as='form' onSubmit={addWord}>
               <FormControl isInvalid={!!errorMessage}>
                 <FormLabel>Memo</FormLabel>
                 <Textarea name='memo' bgColor={'gray.700'} placeholder='memo' />

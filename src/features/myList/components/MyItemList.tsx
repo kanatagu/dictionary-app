@@ -13,7 +13,7 @@ export const MyItemList = () => {
 
   const filteredMyItems = () => {
     if (category === '0' || category === null) {
-      return newArray.reverse();
+      return newArray.slice().reverse();
     }
 
     newArray = storedMyItemsValue.filter((item) => {
@@ -23,7 +23,7 @@ export const MyItemList = () => {
       return hasCategory;
     });
 
-    return newArray.reverse();
+    return newArray.slice().reverse();
   };
 
   return (

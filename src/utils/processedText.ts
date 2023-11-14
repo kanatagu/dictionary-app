@@ -2,7 +2,7 @@ export const processedText = (text: string) => {
   const linkRegex = /\[(.*?)\]/g;
   const matches = text.match(linkRegex);
 
-  // テキスト内のリンクを生成
+  // Make the text into an array of objects.
   const result: { link: boolean; text: string }[] = text
     .split(linkRegex)
     .map((item, index) => {
