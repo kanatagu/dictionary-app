@@ -1,7 +1,7 @@
 import { Container, Heading, Box } from '@chakra-ui/react';
 import { AddCategoryForm } from '../features/category/components';
 
-export const CategoryCreate = () => {
+export const CategoryCreatePage = () => {
   return (
     <Container maxW={{ base: '100%', lg: 'container.sm' }} pt='40px' pb='80px'>
       <Heading>Create Category</Heading>

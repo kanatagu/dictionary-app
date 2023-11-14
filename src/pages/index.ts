@@ -1,7 +1,9 @@
-export { Categories } from './Categories';
-export { CategoryEdit } from './CategoryEdit';
-export { CategoryCreate } from './CategoryCreate';
+export { AccountPage } from './Account';
+export { CategoriesPage } from './Categories';
+export { CategoryEditPage } from './CategoryEdit';
+export { CategoryCreatePage } from './CategoryCreate';
 export { ErrorPage } from './ErrorPage';
 export { Home } from './Home';
-export { MyList } from './MyList';
-export { WordEdit } from './WordEdit';
+export { LoginPage } from './Login';
+export { MyListPage } from './MyList';
+export { SignUpPage } from './SignUp';

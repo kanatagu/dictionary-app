@@ -114,7 +114,7 @@ export const MyItemCard = ({ item }: MyItemCardProps) => {
             >
               Memo
             </Heading>
-            <Text>{memo}</Text>
+            <Text whiteSpace={'pre-wrap'}>{memo}</Text>
           </Box>
         )}
 

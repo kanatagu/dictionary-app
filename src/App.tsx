@@ -1,58 +1,60 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
-import { Layout } from './components';
+import { ProtectedLayout, AuthLayout } from './components';
 import { customTheme } from './theme';
 import {
   ErrorPage,
   Home,
-  MyList,
-  WordEdit,
-  Categories,
-  CategoryEdit,
-  CategoryCreate,
+  LoginPage,
+  MyListPage,
+  CategoriesPage,
+  CategoryEditPage,
+  CategoryCreatePage,
 } from './pages';
+import { AuthProvider } from './providers';
+import { Routes } from './routes';
 
 const App = () => {
-  const router = createBrowserRouter([
-    {
-      path: '/',
-      element: <Layout />,
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          index: true,
-          element: <Home />,
-          // loader: getRandomWords,
-        },
-        {
-          path: 'my-list',
-          element: <MyList />,
-          children: [
-            {
-              path: ':wordId/edit',
-              element: <WordEdit />,
-            },
-          ],
-        },
-        {
-          path: 'category',
-          element: <Categories />,
-        },
-        {
-          path: '/category/:categoryId/edit',
-          element: <CategoryEdit />,
-        },
-        {
-          path: 'category/new',
-          element: <CategoryCreate />,
-        },
-      ],
-    },
-  ]);
+  // const router = createBrowserRouter([
+  //   {
+  //     element: <AuthLayout />,
+  //     children: [{ path: 'login', element: <LoginPage /> }],
+  //   },
+  //   {
+  //     path: '/',
+  //     // element: <ProtectedLayout />,
+  //     errorElement: <ErrorPage />,
+  //     children: [
+  //       {
+  //         index: true,
+  //         element: <Home />,
+  //       },
+
+  //       {
+  //         path: 'my-list',
+  //         element: <MyListPage />,
+  //       },
+  //       {
+  //         path: 'category',
+  //         element: <CategoriesPage />,
+  //       },
+  //       {
+  //         path: '/category/:categoryId/edit',
+  //         element: <CategoryEditPage />,
+  //       },
+  //       {
+  //         path: 'category/new',
+  //         element: <CategoryCreatePage />,
+  //       },
+  //     ],
+  //   },
+  // ]);
 
   return (
     <ChakraProvider theme={customTheme}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </ChakraProvider>
   );
 };
