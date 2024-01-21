@@ -1,6 +1,6 @@
 import {
   Home,
-  MyListPage,
+  MyWordsPage,
   CategoriesPage,
   CategoryEditPage,
   CategoryCreatePage,
@@ -18,8 +18,8 @@ export const ProtectedRoutes = [
         element: <Home />,
       },
       {
-        path: 'my-list',
-        element: <MyListPage />,
+        path: 'my-words',
+        element: <MyWordsPage />,
       },
       {
         path: 'category',

@@ -10,15 +10,15 @@ import {
   TagLeftIcon,
 } from '@chakra-ui/react';
 import { FiExternalLink, FiTag } from 'react-icons/fi';
-import { OptionButton } from '../components';
-import { MyItemType } from '../../../types';
+import { OptionButton } from '.';
+import { MyWordType } from '../../../types';
 import { processedText } from '../../../utils';
 
-type MyItemCardProps = {
-  item: MyItemType;
+type MyWordCardProps = {
+  item: MyWordType;
 };
 
-export const MyItemCard = ({ item }: MyItemCardProps) => {
+export const MyWordCard = ({ item }: MyWordCardProps) => {
   const { memo, word, category } = item;
 
   return (
@@ -36,7 +36,7 @@ export const MyItemCard = ({ item }: MyItemCardProps) => {
         >
           {word.word}
         </Heading>
-        <OptionButton myItem={item} />
+        <OptionButton myWord={item} />
       </Flex>
       <VStack align='stretch' mt='20px' gap={{ base: '20px', md: '30px' }}>
         <VStack align='stretch'>

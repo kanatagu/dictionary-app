@@ -17,26 +17,30 @@ import {
 } from '@chakra-ui/react';
 import { FiChevronRight } from 'react-icons/fi';
 import { useAddWord } from '../hooks';
-import { useLocalStorage } from '../../../hooks';
-import { WordType } from '../../../types';
+import { CategoryType, WordType } from '../../../types';
 
 export type AddWordModalProps = {
   isOpen: boolean;
   onClose: () => void;
   data: WordType;
+  categories: CategoryType[];
 };
 
-export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
-  const { errorMessages, clickHandler, addWord } = useAddWord(onClose, data);
+export const AddWordModal = ({
+  isOpen,
+  onClose,
+  data,
+  categories,
+}: AddWordModalProps) => {
+  const { errorMessages, clickHandler, addWord, isMutating } = useAddWord(
+    onClose,
+    data
+  );
 
   const memoError = errorMessages.find((error) => error.label === 'memo');
   const categoryError = errorMessages.find(
     (error) => error.label === 'category'
   );
-
-  const [storedCategoriesValue, _] = useLocalStorage<
-    { id: number; name: string }[]
-  >('category', []);
 
   return (
     <Modal
@@ -49,7 +53,7 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
       <ModalOverlay />
       <ModalContent px='24px' pt='24px' pb='32px' maxW='27.25rem'>
         <ModalBody p={0}>
-          {storedCategoriesValue.length ? (
+          {categories.length ? (
             <Box as='form' onSubmit={addWord}>
               <FormControl isInvalid={!!memoError}>
                 <FormLabel>Memo</FormLabel>
@@ -59,7 +63,7 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
 
               <FormControl isInvalid={!!categoryError}>
                 <List display='flex' gap='10px' flexDir='column' mt='24px'>
-                  {storedCategoriesValue?.map((category) => (
+                  {categories?.map((category) => (
                     <ListItem
                       key={category.id}
                       display='flex'
@@ -80,7 +84,12 @@ export const AddWordModal = ({ isOpen, onClose, data }: AddWordModalProps) => {
               </FormControl>
 
               <Box textAlign='center' mt='50px'>
-                <Button colorScheme='blue' size='lg' type='submit'>
+                <Button
+                  colorScheme='blue'
+                  size='lg'
+                  type='submit'
+                  isLoading={isMutating}
+                >
                   Add To My List
                 </Button>
               </Box>

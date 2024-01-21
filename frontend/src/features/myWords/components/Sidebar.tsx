@@ -11,10 +11,15 @@ import {
   useDisclosure,
   Button,
 } from '@chakra-ui/react';
-import { NavList } from '../components';
+import { NavList } from '.';
 import { useIsMobile } from '../../../hooks';
+import { CategoryType } from '../../../types';
 
-export const Sidebar = () => {
+type SidebarProps = {
+  categories: CategoryType[];
+};
+
+export const Sidebar = ({ categories }: SidebarProps) => {
   const isMobile = useIsMobile('lg');
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -35,7 +40,7 @@ export const Sidebar = () => {
                   Category
                 </DrawerHeader>
                 <DrawerBody p='12px'>
-                  <NavList onClose={onClose} />
+                  <NavList onClose={onClose} categories={categories} />
                 </DrawerBody>
                 <DrawerFooter></DrawerFooter>
               </DrawerContent>
@@ -60,7 +65,7 @@ export const Sidebar = () => {
           >
             Category
           </Text>
-          <NavList />
+          <NavList categories={categories} />
         </Box>
       )}
     </>

@@ -1,7 +1,9 @@
 import { useState, FormEventHandler } from 'react';
+import useSWRMutation from 'swr/mutation';
 import { useToast } from '@chakra-ui/react';
-import { useLocalStorage } from '../../../hooks';
-import { MyItemType, CategoryType, WordType } from '../../../types';
+import { CategoryType, WordType } from '../../../types';
+import { addMyWord } from '../api';
+import { useGetMyWords } from '../../myWords/hooks';
 
 export const useAddWord = (onClose: () => void, data: WordType) => {
   const toast = useToast();
@@ -10,20 +12,8 @@ export const useAddWord = (onClose: () => void, data: WordType) => {
   >([]);
   const [checkedCategory, setCheckedCategory] = useState<CategoryType[]>([]);
 
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Added to my list',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-  };
-
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', [], afterSubmit);
+  const { trigger, isMutating } = useSWRMutation('/my-words', addMyWord);
+  const { refetch } = useGetMyWords();
 
   const clickHandler = (category: CategoryType) => {
     const foundItem = checkedCategory.some(
@@ -39,7 +29,7 @@ export const useAddWord = (onClose: () => void, data: WordType) => {
     }
   };
 
-  const addWord: FormEventHandler<HTMLFormElement> = (e) => {
+  const addWord: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setErrorMessages([]);
     const form = new FormData(e.currentTarget);
@@ -64,23 +54,32 @@ export const useAddWord = (onClose: () => void, data: WordType) => {
       return;
     }
 
-    const id = storedMyItemsValue.length
-      ? storedMyItemsValue.slice(-1)[0].id + 1
-      : 1;
-
-    const newData: MyItemType = {
-      id,
+    const arg = {
       memo: inputMemo,
       word: data,
       category: checkedCategory,
     };
 
-    setStoredMyItemsValue([...storedMyItemsValue, newData]);
+    await trigger(arg);
+
+    toast({
+      title: 'Success!',
+      description: 'Added to my list',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+
+    onClose();
+
+    // TODO does not work?, need to refetch allWords
+    refetch();
   };
 
   return {
     errorMessages,
     clickHandler,
     addWord,
+    isMutating,
   };
 };

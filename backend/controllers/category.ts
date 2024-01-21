@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import categoryModel from '../models/category';
-import myItemModel from '../models/myItem';
+import myWordModel from '../models/myWord';
 
 /**
  * @desc     Get all categories
@@ -68,7 +68,7 @@ export function updateCategory(req: Request, res: Response) {
   category.name = name;
 
   // Update category name in myItems
-  const newItemsArray = myItemModel.myItems.map((item) => {
+  const newItemsArray = myWordModel.myWords.map((item) => {
     item.category.forEach((categoryItem) => {
       if (categoryItem.id === category.id) {
         categoryItem.name = name;
@@ -76,7 +76,7 @@ export function updateCategory(req: Request, res: Response) {
     });
     return item;
   });
-  myItemModel.myItems = newItemsArray;
+  myWordModel.myWords = newItemsArray;
 
   return res.status(200).json(category);
 }
@@ -97,7 +97,7 @@ export function deleteCategory(req: Request, res: Response) {
   }
 
   // Delete category from myItems
-  let newArray = [...myItemModel.myItems];
+  let newArray = [...myWordModel.myWords];
 
   newArray.forEach((myItem) => {
     const updatedCategoryItems = myItem.category.filter(
@@ -116,7 +116,7 @@ export function deleteCategory(req: Request, res: Response) {
     }
   });
 
-  myItemModel.myItems = newArray;
+  myWordModel.myWords = newArray;
 
   // Delete Category
   const index = categoryModel.categories.indexOf(category);

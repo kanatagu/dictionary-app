@@ -1,11 +1,25 @@
+import useSWRMutation from 'swr/mutation';
 import { useToast } from '@chakra-ui/react';
-import { WordType, MyItemType } from '../../../types';
-import { useLocalStorage } from '../../../hooks';
+import { WordType } from '../../../types';
+import { deleteMyWord as deleteMyWordApi } from '../../myWords/api';
+import { useGetMyWords } from '../../myWords/hooks';
 
 export const useDeleteWord = (onDeleteClose: () => void, data: WordType) => {
   const toast = useToast();
 
-  const afterSubmit = () => {
+  const { data: myWords, refetch } = useGetMyWords();
+
+  const id = myWords?.find((item) => item.word.defid === data.defid)?.id;
+  console.log('id', id);
+
+  const { trigger, isMutating } = useSWRMutation(
+    `/my-words/${id}`,
+    deleteMyWordApi
+  );
+
+  const deleteWord = async () => {
+    await trigger();
+
     toast({
       title: 'Success!',
       description: 'Deleted the word.',
@@ -14,25 +28,14 @@ export const useDeleteWord = (onDeleteClose: () => void, data: WordType) => {
       isClosable: true,
     });
     onDeleteClose();
+    refetch();
   };
 
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', [], afterSubmit);
-
-  const deleteWord = () => {
-    const filteredMyItems = storedMyItemsValue.filter(
-      (item) => item.word.defid !== data.defid
-    );
-    setStoredMyItemsValue(filteredMyItems);
-  };
-
-  const isInMyItem = storedMyItemsValue.some(
-    (item) => item.word.defid === data.defid
-  );
+  const isInMyItem = !!id;
 
   return {
     deleteWord,
     isInMyItem,
+    isMutating,
   };
 };

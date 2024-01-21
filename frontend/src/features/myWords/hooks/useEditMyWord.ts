@@ -1,9 +1,11 @@
 import { useState, FormEventHandler } from 'react';
+import useSWRMutation from 'swr/mutation';
 import { useToast } from '@chakra-ui/react';
-import { useLocalStorage } from '../../../hooks';
-import { MyItemType, CategoryType } from '../../../types';
+import { MyWordType, CategoryType } from '../../../types';
+import { updateMyWord } from '../api';
+import { useGetMyWords } from '../../myWords/hooks';
 
-export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
+export const useEditMyWord = (item: MyWordType, onClose: () => void) => {
   const toast = useToast();
   const [errorMessages, setErrorMessages] = useState<
     { message: string; label: string }[]
@@ -12,29 +14,13 @@ export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
     item.category
   );
 
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Saved changes.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-  };
+  const { trigger, isMutating } = useSWRMutation(
+    `/my-words/${item.id}`,
+    updateMyWord
+  );
+  const { refetch } = useGetMyWords();
 
-  const [storedCategoriesValue, _] = useLocalStorage<
-    { id: number; name: string }[]
-  >('category', []);
-
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', [], afterSubmit);
-
-  const newArray = [...storedMyItemsValue];
-  const storedMyItem = newArray.find((storedItem) => storedItem.id === item.id);
-
-  const isFavoriteThisCategory = (categoryId: number) => {
+  const isFavoriteThisCategory = (categoryId: string) => {
     return item.category.some((category) => category.id === categoryId);
   };
 
@@ -52,7 +38,7 @@ export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
     }
   };
 
-  const editMyItem: FormEventHandler<HTMLFormElement> = (e) => {
+  const editMyItem: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setErrorMessages([]);
     const form = new FormData(e.currentTarget);
@@ -77,11 +63,23 @@ export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
       return;
     }
 
-    if (storedMyItem) {
-      storedMyItem.memo = inputMemo;
-      storedMyItem.category = checkedCategory;
-      setStoredMyItemsValue(newArray);
-    }
+    const arg = {
+      memo: inputMemo,
+      word: item.word,
+      category: checkedCategory,
+    };
+
+    await trigger(arg);
+
+    toast({
+      title: 'Success!',
+      description: 'Saved changes.',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+    onClose();
+    refetch();
   };
 
   return {
@@ -89,6 +87,6 @@ export const useEditMyItem = (item: MyItemType, onClose: () => void) => {
     editMyItem,
     clickHandler,
     isFavoriteThisCategory,
-    storedCategoriesValue,
+    isMutating,
   };
 };

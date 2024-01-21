@@ -7,16 +7,16 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
-import { EditWordModal } from '../components';
-import { useDeleteMyItem } from '../hooks';
+import { EditWordModal } from '.';
+import { useDeleteMyWord } from '../hooks';
 import { ConfirmModal } from '../../../components';
-import { MyItemType } from '../../../types';
+import { MyWordType } from '../../../types';
 
 type OptionButtonProps = {
-  myItem: MyItemType;
+  myWord: MyWordType;
 };
 
-export const OptionButton = ({ myItem }: OptionButtonProps) => {
+export const OptionButton = ({ myWord }: OptionButtonProps) => {
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
@@ -28,7 +28,7 @@ export const OptionButton = ({ myItem }: OptionButtonProps) => {
     onClose: onDeleteClose,
   } = useDisclosure();
 
-  const { deleteMyItem } = useDeleteMyItem(myItem, onDeleteClose);
+  const { deleteMyWord, isMutating } = useDeleteMyWord(myWord, onDeleteClose);
 
   return (
     <>
@@ -46,14 +46,19 @@ export const OptionButton = ({ myItem }: OptionButtonProps) => {
         </MenuList>
       </Menu>
 
-      <EditWordModal isOpen={isEditOpen} onClose={onEditClose} item={myItem} />
+      <EditWordModal isOpen={isEditOpen} onClose={onEditClose} item={myWord} />
 
       <ConfirmModal
         isOpen={isDeleteOpen}
         onClose={onDeleteClose}
         text={'Are you sure you want to Delete this word?'}
         submitButton={
-          <Button colorScheme='red' color='red.600' onClick={deleteMyItem}>
+          <Button
+            colorScheme='red'
+            color='red.600'
+            onClick={deleteMyWord}
+            isLoading={isMutating}
+          >
             Delete
           </Button>
         }

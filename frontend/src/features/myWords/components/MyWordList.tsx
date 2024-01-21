@@ -1,24 +1,26 @@
 import { useSearchParams } from 'react-router-dom';
 import { List, Text } from '@chakra-ui/react';
-import { MyItemCard } from '.';
-import { useLocalStorage } from '../../../hooks';
-import { MyItemType } from '../../../types';
+import { MyWordCard } from '.';
+import { MyWordType } from '../../../types';
 
-export const MyItemList = () => {
+type MyWordListProps = {
+  myWords: MyWordType[];
+};
+
+export const MyWordList = ({ myWords }: MyWordListProps) => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
-  const [storedMyItemsValue] = useLocalStorage<MyItemType[]>('myItem', []);
 
-  let newArray = [...storedMyItemsValue];
+  let newArray = [...myWords];
 
-  const filteredMyItems = () => {
-    if (category === '0' || category === null) {
+  const filteredMyWords = () => {
+    if (category === 'all' || category === null) {
       return newArray.slice().reverse();
     }
 
-    newArray = storedMyItemsValue.filter((item) => {
+    newArray = myWords.filter((item) => {
       const hasCategory = item.category.some(
-        (itemCategory) => itemCategory.id === Number(category)
+        (itemCategory) => itemCategory.id === category
       );
       return hasCategory;
     });
@@ -37,10 +39,10 @@ export const MyItemList = () => {
       mb='80px'
       flexGrow={1}
     >
-      {filteredMyItems().length ? (
+      {filteredMyWords().length ? (
         <>
-          {filteredMyItems().map((item) => (
-            <MyItemCard item={item} key={item.id} />
+          {filteredMyWords().map((item) => (
+            <MyWordCard item={item} key={item.id} />
           ))}
         </>
       ) : (

@@ -16,13 +16,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FiChevronRight } from 'react-icons/fi';
-import { useEditMyItem } from '../hooks';
-import { MyItemType } from '../../../types';
+import { useEditMyWord } from '../hooks';
+import { MyWordType } from '../../../types';
+import { useGetCategories } from '../../category/hooks';
 
 export type EditWordModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  item: MyItemType;
+  item: MyWordType;
 };
 
 export const EditWordModal = ({
@@ -35,8 +36,10 @@ export const EditWordModal = ({
     editMyItem,
     clickHandler,
     isFavoriteThisCategory,
-    storedCategoriesValue,
-  } = useEditMyItem(item, onClose);
+    isMutating,
+  } = useEditMyWord(item, onClose);
+
+  const { data: categories } = useGetCategories();
 
   const memoError = errorMessages.find((error) => error.label === 'memo');
   const categoryError = errorMessages.find(
@@ -54,7 +57,7 @@ export const EditWordModal = ({
       <ModalOverlay />
       <ModalContent px='24px' pt='24px' pb='32px' maxW='27.25rem'>
         <ModalBody p={0}>
-          {storedCategoriesValue.length ? (
+          {categories && categories.length ? (
             <Box as='form' onSubmit={editMyItem}>
               <FormControl isInvalid={!!memoError}>
                 <FormLabel>Memo</FormLabel>
@@ -69,7 +72,7 @@ export const EditWordModal = ({
 
               <FormControl isInvalid={!!categoryError}>
                 <List display='flex' gap='10px' flexDir='column' mt='24px'>
-                  {storedCategoriesValue?.map((category) => (
+                  {categories?.map((category) => (
                     <ListItem
                       key={category.id}
                       display='flex'
@@ -91,7 +94,12 @@ export const EditWordModal = ({
               </FormControl>
 
               <Box textAlign='center' mt='50px'>
-                <Button colorScheme='blue' size='lg' type='submit'>
+                <Button
+                  colorScheme='blue'
+                  size='lg'
+                  type='submit'
+                  isLoading={isMutating}
+                >
                   Save Changes
                 </Button>
               </Box>

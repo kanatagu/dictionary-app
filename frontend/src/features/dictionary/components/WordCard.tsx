@@ -13,15 +13,16 @@ import { FiExternalLink } from 'react-icons/fi';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { AddWordModal } from '../components';
 import { useDeleteWord } from '../hooks';
-import { WordType } from '../../../types';
+import { CategoryType, WordType } from '../../../types';
 import { processedText } from '../../../utils';
 import { ConfirmModal } from '../../../components';
 
 type WordCardProps = {
   data: WordType;
+  categories: CategoryType[];
 };
 
-export const WordCard = ({ data }: WordCardProps) => {
+export const WordCard = ({ data, categories }: WordCardProps) => {
   const { word, definition, example, permalink } = data;
   const {
     isOpen: isAddOpen,
@@ -34,7 +35,10 @@ export const WordCard = ({ data }: WordCardProps) => {
     onClose: onDeleteClose,
   } = useDisclosure();
 
-  const { deleteWord, isInMyItem } = useDeleteWord(onDeleteClose, data);
+  const { deleteWord, isInMyItem, isMutating } = useDeleteWord(
+    onDeleteClose,
+    data
+  );
 
   const getHeartIcon = () => {
     return isInMyItem ? (
@@ -145,7 +149,12 @@ export const WordCard = ({ data }: WordCardProps) => {
       </Box>
 
       {isAddOpen && (
-        <AddWordModal isOpen={isAddOpen} onClose={onAddClose} data={data} />
+        <AddWordModal
+          isOpen={isAddOpen}
+          onClose={onAddClose}
+          data={data}
+          categories={categories}
+        />
       )}
 
       {isDeleteOpen && (
@@ -154,7 +163,12 @@ export const WordCard = ({ data }: WordCardProps) => {
           onClose={onDeleteClose}
           text={'Are you sure you want to Delete this word from My List?'}
           submitButton={
-            <Button colorScheme='red' color='red.600' onClick={deleteWord}>
+            <Button
+              colorScheme='red'
+              color='red.600'
+              onClick={deleteWord}
+              isLoading={isMutating}
+            >
               Delete
             </Button>
           }

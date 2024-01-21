@@ -13,14 +13,14 @@ type WordType = {
   thumbs_down: number;
 };
 
-type MyItemType = {
+type MyWordType = {
   id: string;
   memo?: string;
   word: WordType;
   category: CategoryType[];
 };
 
-class MyItem {
+class MyWord {
   id: string;
   memo?: string;
   word: WordType;
@@ -40,9 +40,9 @@ class MyItem {
 }
 
 // In-memory table
-const myItems: MyItemType[] = [];
+const myWords: MyWordType[] = [];
 
 export default {
-  MyItem,
-  myItems,
+  MyWord,
+  myWords,
 };

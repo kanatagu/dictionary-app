@@ -5,5 +5,5 @@ export { CategoryCreatePage } from './CategoryCreate';
 export { ErrorPage } from './ErrorPage';
 export { Home } from './Home';
 export { LoginPage } from './Login';
-export { MyListPage } from './MyList';
+export { MyWordsPage } from './MyWords';
 export { SignUpPage } from './SignUp';

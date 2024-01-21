@@ -1,31 +1,27 @@
 import { useSearchParams } from 'react-router-dom';
 import { Box, Flex } from '@chakra-ui/react';
-import { useLocalStorage } from '../../../hooks';
 import { CategoryType } from '../../../types';
 
 type NavListType = {
   onClose?: () => void;
+  categories: CategoryType[];
 };
-export const NavList = ({ onClose }: NavListType) => {
+export const NavList = ({ onClose, categories }: NavListType) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
-  const [storedCategoriesValue, _] = useLocalStorage<CategoryType[]>(
-    'category',
-    []
-  );
 
-  const newArray = [...storedCategoriesValue];
-  newArray.unshift({ id: 0, name: 'All' });
+  const newArray = [...categories];
+  newArray.unshift({ id: 'all', name: 'All' });
 
-  const clickHandler = (categoryId: number) => {
-    setSearchParams({ category: categoryId.toString() });
+  const clickHandler = (categoryId: string) => {
+    setSearchParams({ category: categoryId });
     if (onClose) onClose();
   };
 
   return (
     <Flex my={{ base: '0', lg: '20px' }} flexDir='column'>
       {newArray.map((category) => {
-        const isActive = Number(categoryParam) === category.id;
+        const isActive = categoryParam === category.id;
         return (
           <Box
             as='button'

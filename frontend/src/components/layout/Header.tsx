@@ -45,7 +45,7 @@ export const Header = () => {
           position='relative'
         >
           <CustomNavLink to='/'>HOME</CustomNavLink>
-          <CustomNavLink to='/my-list'>MY LIST</CustomNavLink>
+          <CustomNavLink to='/my-words'>MY WORDS</CustomNavLink>
           <CustomNavLink to='/category'>CATEGORY</CustomNavLink>
           <Menu>
             <MenuButton aria-label='Options' color='gray.200'>

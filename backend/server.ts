@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import categoryRoutes from './routes/category';
+import myWordRoutes from './routes/myWord';
 
 const app: Express = express();
 const PORT = 3001;
@@ -34,16 +35,7 @@ app.use(
 // load routing to handle all requests
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
-
-// const router = express.Router();
-
-// router.get('/', (req, res) => {
-//   res.send('Test!');
-// });
-
-// app.use('/api/auth', router);
-
-// app.get('/', (req: Request, res: Response) => res.send('Hello World!'));
+app.use('/api/my-words', myWordRoutes);
 
 // Start server
 app.listen(PORT, () => {

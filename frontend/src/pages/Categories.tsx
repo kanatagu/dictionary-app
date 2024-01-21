@@ -1,8 +1,8 @@
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Container, Heading, Flex, Button } from '@chakra-ui/react';
 import { FiChevronRight } from 'react-icons/fi';
-import { CategoryList } from '../features/category/components';
 import { Loading, Error } from '../components';
+import { CategoryList } from '../features/category/components';
 import { useGetCategories } from '../features/category/hooks';
 
 export const CategoriesPage = () => {
