@@ -1,8 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import useSWRImmutable from 'swr/immutable';
 import { WordType } from '../../../types';
-import { DICTIONARY_URL } from '../../../const';
-import { dictionaryFetcher } from '../../../api';
+import { getDictionaries } from '../api';
 
 export const useRandomDictionary = () => {
   const [searchParams] = useSearchParams();
@@ -10,7 +9,7 @@ export const useRandomDictionary = () => {
 
   const { mutate, data, error, isValidating } = useSWRImmutable<
     Record<'list', WordType[]>
-  >(!searchWord ? `${DICTIONARY_URL}/random` : null, dictionaryFetcher);
+  >(!searchWord ? `/random` : null, getDictionaries);
 
   const refetch = () => {
     mutate();

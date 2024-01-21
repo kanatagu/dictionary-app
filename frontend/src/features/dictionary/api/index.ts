@@ -1,0 +1,1 @@
+export { getDictionaries } from './getDictionaries';

@@ -1,42 +1,23 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { FormEventHandler } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useSWRMutation from 'swr/mutation';
 import { useToast } from '@chakra-ui/react';
-import { useLocalStorage } from '../../../hooks';
-import { CategoryType, MyItemType } from '../../../types';
+import { updateCategory } from '../api';
+import { useGetCategories } from '.';
 
-export const useEditCategory = () => {
+export const useEditCategory = (id: string) => {
   const navigate = useNavigate();
-  const params = useParams();
   const toast = useToast();
   const [errorMessage, setErrorMessage] = useState('');
 
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Updated category name.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    navigate('/category');
-  };
-
-  const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
-    CategoryType[]
-  >('category', [], afterSubmit);
-
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', []);
-
-  const newArray = [...storedCategoriesValue];
-
-  const storedCategoryItem = newArray.find(
-    (item) => item.id === Number(params.categoryId)
+  const { trigger, isMutating } = useSWRMutation(
+    `/categories/${id}`,
+    updateCategory
   );
+  const { refetch } = useGetCategories();
 
-  const editCategory: FormEventHandler<HTMLFormElement> = (e) => {
+  const editCategory: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     const form = new FormData(e.currentTarget);
@@ -52,27 +33,34 @@ export const useEditCategory = () => {
       return;
     }
 
-    if (storedCategoryItem) {
-      storedCategoryItem.name = inputCategory;
-      setStoredCategoriesValue(newArray);
-    }
-
-    // Update category name in myItems
-    const newItemsArray = storedMyItemsValue.map((myItem) => {
-      myItem.category.forEach((categoryItem) => {
-        if (categoryItem.id === storedCategoryItem?.id) {
-          categoryItem.name = inputCategory;
-        }
+    try {
+      await trigger({ name: inputCategory });
+      toast({
+        title: 'Success!',
+        description: 'Updated category name.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
       });
-      return myItem;
-    });
 
-    setStoredMyItemsValue(newItemsArray);
+      // TODO : not working to refetch, fix this
+      refetch();
+      navigate('/category');
+    } catch (e) {
+      console.error(e);
+      toast({
+        title: 'Error',
+        description: 'Sorry, error has occurred. Try again later.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return {
     errorMessage,
     editCategory,
-    storedCategoryItem,
+    isMutating,
   };
 };

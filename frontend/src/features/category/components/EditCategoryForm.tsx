@@ -7,9 +7,13 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { useEditCategory } from '../hooks';
+import { CategoryType } from '../../../types';
 
-export const EditCategoryForm = () => {
-  const { errorMessage, editCategory, storedCategoryItem } = useEditCategory();
+type EditCategoryFormProps = {
+  data: CategoryType;
+};
+export const EditCategoryForm = ({ data }: EditCategoryFormProps) => {
+  const { errorMessage, editCategory } = useEditCategory(data.id);
 
   return (
     <Box as='form' onSubmit={editCategory}>
@@ -20,7 +24,7 @@ export const EditCategoryForm = () => {
           name='category'
           bgColor={'gray.700'}
           placeholder='category'
-          defaultValue={storedCategoryItem?.name}
+          defaultValue={data?.name}
         />
         <FormErrorMessage>{errorMessage}</FormErrorMessage>
       </FormControl>

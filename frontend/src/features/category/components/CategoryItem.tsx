@@ -11,7 +11,10 @@ type CategoryItemProps = {
 export const CategoryItem = ({ category }: CategoryItemProps) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { deleteCategory } = useDeleteCategory(category, onClose);
+  const { deleteCategory, isMutating } = useDeleteCategory(
+    category.id,
+    onClose
+  );
 
   return (
     <>
@@ -57,7 +60,12 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
         text={'Are you sure you want to Delete this category? '}
         subText={'*The Words in this category will also be deleted.'}
         submitButton={
-          <Button colorScheme='red' color='red.600' onClick={deleteCategory}>
+          <Button
+            colorScheme='red'
+            color='red.600'
+            onClick={deleteCategory}
+            isLoading={isMutating}
+          >
             Delete
           </Button>
         }

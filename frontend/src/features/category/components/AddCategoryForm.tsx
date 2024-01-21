@@ -9,7 +9,7 @@ import {
 import { useAddCategory } from '../hooks';
 
 export const AddCategoryForm = () => {
-  const { errorMessage, addCategory } = useAddCategory();
+  const { errorMessage, addCategory, isMutating } = useAddCategory();
 
   return (
     <Box as='form' onSubmit={addCategory}>
@@ -25,7 +25,12 @@ export const AddCategoryForm = () => {
       </FormControl>
 
       <Box textAlign='center' mt='50px'>
-        <Button colorScheme='blue' size='lg' type='submit'>
+        <Button
+          colorScheme='blue'
+          size='lg'
+          type='submit'
+          isLoading={isMutating}
+        >
           Add Category
         </Button>
       </Box>

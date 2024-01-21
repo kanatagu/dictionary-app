@@ -1,62 +1,44 @@
+import useSWRMutation from 'swr/mutation';
 import { useToast } from '@chakra-ui/react';
-import { useLocalStorage } from '../../../hooks';
-import { CategoryType, MyItemType } from '../../../types';
+import { deleteCategory as deleteCategoryApi } from '../api';
+import { useGetCategories } from '.';
 
-export const useDeleteCategory = (
-  category: CategoryType,
-  onClose: () => void
-) => {
+export const useDeleteCategory = (id: string, onClose: () => void) => {
   const toast = useToast();
 
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Deleted category name.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-  };
-  const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
-    CategoryType[]
-  >('category', [], afterSubmit);
+  const { trigger, isMutating } = useSWRMutation(
+    `/categories/${id}`,
+    deleteCategoryApi
+  );
+  const { refetch } = useGetCategories();
 
-  const [storedMyItemsValue, setStoredMyItemsValue] = useLocalStorage<
-    MyItemType[]
-  >('myItem', []);
+  const deleteCategory = async () => {
+    try {
+      await trigger();
+      toast({
+        title: 'Success!',
+        description: 'Deleted category name.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
 
-  const deleteCategory = () => {
-    let newArray = [...storedMyItemsValue];
-
-    // Delete category from myItems
-    newArray.forEach((myItem) => {
-      const updatedCategoryItems = myItem.category.filter(
-        (categoryItem) => categoryItem.id !== category.id
-      );
-
-      // If only this category is attached, delete the entire item
-      if (updatedCategoryItems.length === 0) {
-        const deletedItemsArray = newArray.filter(
-          (item) => item.id !== myItem.id
-        );
-
-        newArray = deletedItemsArray;
-      } else {
-        myItem.category = updatedCategoryItems;
-      }
-    });
-
-    setStoredMyItemsValue(newArray);
-
-    // Delete category
-    const filteredCategory = storedCategoriesValue.filter(
-      (item) => item.id !== category.id
-    );
-    setStoredCategoriesValue(filteredCategory);
+      refetch();
+      onClose();
+    } catch (e) {
+      console.error(e);
+      toast({
+        title: 'Error',
+        description: 'Sorry, error has occurred. Try again later.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return {
     deleteCategory,
+    isMutating,
   };
 };

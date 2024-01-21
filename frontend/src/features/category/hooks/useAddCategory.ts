@@ -1,30 +1,19 @@
 import { useState, FormEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useSWRMutation from 'swr/mutation';
 import { useToast } from '@chakra-ui/react';
-import { useLocalStorage } from '../../../hooks';
-import { CategoryType } from '../../../types';
+import { createCategory } from '../api';
+import { useGetCategories } from '.';
 
 export const useAddCategory = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [errorMessage, setErrorMessage] = useState('');
 
-  const afterSubmit = () => {
-    toast({
-      title: 'Success!',
-      description: 'Created category name.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    navigate('/category');
-  };
+  const { trigger, isMutating } = useSWRMutation('/categories', createCategory);
+  const { refetch } = useGetCategories();
 
-  const [storedCategoriesValue, setStoredCategoriesValue] = useLocalStorage<
-    CategoryType[]
-  >('category', [], afterSubmit);
-
-  const addCategory: FormEventHandler<HTMLFormElement> = (e) => {
+  const addCategory: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     const form = new FormData(e.currentTarget);
@@ -40,18 +29,34 @@ export const useAddCategory = () => {
       return;
     }
 
-    const id = storedCategoriesValue.length
-      ? storedCategoriesValue.slice(-1)[0].id + 1
-      : 1;
+    try {
+      const result = await trigger({ name: inputCategory });
+      console.log(result);
+      toast({
+        title: 'Success!',
+        description: 'Created category name.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
 
-    setStoredCategoriesValue([
-      ...storedCategoriesValue,
-      { id, name: inputCategory },
-    ]);
+      refetch();
+      navigate('/category');
+    } catch (e) {
+      console.error(e);
+      toast({
+        title: 'Error',
+        description: 'Sorry, error has occurred. Try again later.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return {
     errorMessage,
     addCategory,
+    isMutating,
   };
 };

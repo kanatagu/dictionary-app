@@ -1,1 +1,0 @@
-export { dictionaryFetcher } from './dictionaryFetcher';
