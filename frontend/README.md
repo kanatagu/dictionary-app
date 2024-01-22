@@ -21,7 +21,5 @@ npm run dev
 - DB server
 - Filter myWords by categoryId in backend side
 - router to first load page after login (not top page)
-- Fix error type in forms
 - Search from My LIST
 - Refactor form validation
-- Delete ChakraUI dark mode
