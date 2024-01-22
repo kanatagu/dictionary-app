@@ -10,13 +10,17 @@ import userModel from '../models/user';
  */
 export async function createUser(req: Request, res: Response) {
   const { email, password } = req.body;
-  console.log('email', email);
-  console.log('password', password);
 
   if (!email || !password) {
     return res
       .status(400)
       .json({ message: 'Please provide email and password' });
+  }
+
+  // Check if user already exists
+  const existingUser = userModel.users.find((user) => user.email === email);
+  if (existingUser) {
+    return res.status(400).json({ message: 'Invalid user Information' });
   }
 
   const userId = String(userModel.users.length + 1);
@@ -56,7 +60,11 @@ export async function loginUser(req: Request, res: Response) {
     return res.status(400).json({ message: 'Invalid login information' });
   }
 
-  res.cookie('token', token, { httpOnly: true });
+  res.cookie('token', token, {
+    secure: true,
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 24H
+  });
 
   return res.status(200).json({ id: user.id, email: user.email });
 }

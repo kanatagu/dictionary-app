@@ -7,7 +7,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { LoginForm } from '../features/auth/components';
+import { LoginForm } from '../components/auth';
 
 export const LoginPage = () => {
   return (

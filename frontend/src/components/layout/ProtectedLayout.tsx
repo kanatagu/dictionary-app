@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
 import { Header } from '../../components/layout';
-import { useAuth } from '../../hooks/common';
+import { useAuthContext } from '../../providers';
 
 export const ProtectedLayout = () => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   if (!user) {
     return <Navigate to='/login' />;

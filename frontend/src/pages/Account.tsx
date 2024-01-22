@@ -1,8 +1,8 @@
 import { Container, Heading, Flex, Text } from '@chakra-ui/react';
-import { useAuth } from '../hooks/common';
+import { useAuthContext } from '../providers';
 
 export const AccountPage = () => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   return (
     <Container maxW={{ base: '100%', lg: 'container.sm' }} pt='40px' pb='80px'>

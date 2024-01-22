@@ -7,7 +7,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { SignUpForm } from '../features/auth/components';
+import { SignUpForm } from '../components/auth';
 
 export const SignUpPage = () => {
   return (

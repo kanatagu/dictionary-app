@@ -1,10 +1,10 @@
-import { createContext } from 'react';
-import { useLocalStorage, SetValue } from '../hooks/common';
+import { createContext, Dispatch, SetStateAction, useEffect } from 'react';
+import { useAuth } from '../hooks/auth';
 import { UserType } from '../types';
 
 type AuthContextType = {
   user: UserType | null;
-  setUser: SetValue<UserType | null>;
+  setUser: Dispatch<SetStateAction<UserType | null>>;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -17,11 +17,19 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useLocalStorage<UserType | null>('user', null);
+  const { user, setUser, getUser } = useAuth();
 
-  return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  // Check if user has token when app loads/reloads
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  const value = {
+    user,
+    setUser,
+  };
+
+  console.log('user', user);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

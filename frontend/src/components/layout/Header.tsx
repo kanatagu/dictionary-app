@@ -14,15 +14,11 @@ import {
   MdManageAccounts,
   MdOutlineLogout,
 } from 'react-icons/md';
-import { useAuth } from '../../hooks/common';
+import { useLogout } from '../../hooks/auth';
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
-
-  const logout = () => {
-    setUser(null);
-  };
+  const { logout } = useLogout();
 
   return (
     <Box
