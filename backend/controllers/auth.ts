@@ -76,7 +76,6 @@ export async function loginUser(req: Request, res: Response) {
  */
 export function getUser(req: Request, res: Response) {
   const { user: reqUser } = req;
-  console.log('reqUser', reqUser);
 
   const user = userModel.users.find((user) => user.id === reqUser?.id);
 

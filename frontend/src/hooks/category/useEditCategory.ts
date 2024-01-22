@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { FormEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSWRMutation from 'swr/mutation';
+import { mutate } from 'swr';
 import { useToast } from '@chakra-ui/react';
 import { updateCategoryApi } from '../../api/category';
-import { useGetCategories } from '.';
 
 export const useEditCategory = (id: string) => {
   const navigate = useNavigate();
@@ -15,7 +15,6 @@ export const useEditCategory = (id: string) => {
     `/categories/${id}`,
     updateCategoryApi
   );
-  const { refetch } = useGetCategories();
 
   const editCategory: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -43,8 +42,14 @@ export const useEditCategory = (id: string) => {
         isClosable: true,
       });
 
-      // TODO : not working to refetch, fix this
-      refetch();
+      // Need to use mutate() to update multiple keys
+      mutate(
+        (key) => typeof key === 'string' && key.startsWith('/categories'),
+        undefined,
+        { revalidate: true }
+      );
+      mutate('/my-words', undefined, { revalidate: true });
+
       navigate('/category');
     } catch (e) {
       console.error(e);

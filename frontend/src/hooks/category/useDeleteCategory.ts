@@ -1,7 +1,7 @@
 import useSWRMutation from 'swr/mutation';
+import { mutate } from 'swr';
 import { useToast } from '@chakra-ui/react';
 import { deleteCategoryApi } from '../../api/category';
-import { useGetCategories } from '.';
 
 export const useDeleteCategory = (id: string, onClose: () => void) => {
   const toast = useToast();
@@ -10,7 +10,6 @@ export const useDeleteCategory = (id: string, onClose: () => void) => {
     `/categories/${id}`,
     deleteCategoryApi
   );
-  const { refetch } = useGetCategories();
 
   const deleteCategory = async () => {
     try {
@@ -23,7 +22,10 @@ export const useDeleteCategory = (id: string, onClose: () => void) => {
         isClosable: true,
       });
 
-      refetch();
+      // Need to use mutate() to update multiple keys
+      mutate('/categories', undefined, { revalidate: true });
+      mutate('/my-words', undefined, { revalidate: true });
+
       onClose();
     } catch (e) {
       console.error(e);

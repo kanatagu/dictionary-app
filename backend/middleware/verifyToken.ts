@@ -14,8 +14,6 @@ export const verifyToken = (
 
     const verified = jwt.verify(token, `${process.env.JWT_SECRET_KEY}`);
 
-    console.log('verified', verified);
-
     if (!verified || typeof verified !== 'object') {
       return res.status(401).json({ message: 'Invalid token' });
     }

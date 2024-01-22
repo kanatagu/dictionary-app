@@ -71,8 +71,6 @@ export const useAddMyWord = (onClose: () => void, data: WordType) => {
     });
 
     onClose();
-
-    // TODO does not work?, need to refetch allWords
     refetch();
   };
 

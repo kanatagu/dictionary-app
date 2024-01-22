@@ -9,7 +9,6 @@ export const useAuth = () => {
   const getUser = useCallback(async () => {
     try {
       const res = await getUserApi('/auth/user');
-      console.log('rest', res);
       setUser({
         id: res.id,
         email: res.email,
