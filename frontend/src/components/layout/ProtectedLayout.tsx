@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
-import { Header } from '../../components';
-import { useAuth } from '../../hooks';
+import { Header } from '../../components/layout';
+import { useAuth } from '../../hooks/common';
 
 export const ProtectedLayout = () => {
   const { user } = useAuth();

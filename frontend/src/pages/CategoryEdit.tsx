@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { Container, Heading, Box } from '@chakra-ui/react';
-import { Error, Loading } from '../components';
-import { EditCategoryForm } from '../features/category/components';
-import { useGetCategory } from '../features/category/hooks/useGetCategory';
+import { Error, Loading } from '../components/ui';
+import { EditCategoryForm } from '../components/category';
+import { useGetCategory } from '../hooks/category';
 
 export const CategoryEditPage = () => {
   const params = useParams();

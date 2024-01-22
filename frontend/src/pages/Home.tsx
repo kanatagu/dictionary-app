@@ -1,11 +1,8 @@
 import { Container, Flex, Box, Button } from '@chakra-ui/react';
-import { Loading, Error } from '../components';
-import { SearchWord, WordCard } from '../features/dictionary/components';
-import {
-  useRandomDictionary,
-  useSearchDictionary,
-} from '../features/dictionary/hooks';
-import { useGetCategories } from '../features/category/hooks';
+import { Loading, Error } from '../components/ui';
+import { SearchWord, WordCard } from '../components/dictionary';
+import { useRandomDictionary, useSearchDictionary } from '../hooks/dictionary';
+import { useGetCategories } from '../hooks/category';
 
 export const Home = () => {
   const {

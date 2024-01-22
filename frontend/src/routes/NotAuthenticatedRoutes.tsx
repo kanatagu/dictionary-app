@@ -1,5 +1,5 @@
 import { LoginPage, SignUpPage } from '../pages';
-import { NotAuthenticatedLayout } from '../components';
+import { NotAuthenticatedLayout } from '../components/layout';
 
 export const NotAuthenticatedRoutes = [
   {

@@ -1,4 +1,4 @@
-import { useLocalStorage } from '../../../hooks';
+import { useLocalStorage } from '../../../hooks/common';
 import { UserType } from '../../../types';
 
 export const useCheckUserPool = () => {

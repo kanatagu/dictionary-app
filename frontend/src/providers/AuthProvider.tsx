@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { useLocalStorage, SetValue } from '../hooks';
+import { useLocalStorage, SetValue } from '../hooks/common';
 import { UserType } from '../types';
 
 type AuthContextType = {

@@ -1,5 +1,5 @@
 import { Container, Heading, Box } from '@chakra-ui/react';
-import { AddCategoryForm } from '../features/category/components';
+import { AddCategoryForm } from '../components/category';
 
 export const CategoryCreatePage = () => {
   return (

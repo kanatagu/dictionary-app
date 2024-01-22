@@ -6,7 +6,7 @@ import {
   CategoryCreatePage,
   AccountPage,
 } from '../pages';
-import { ProtectedLayout } from '../components';
+import { ProtectedLayout } from '../components/layout';
 
 export const ProtectedRoutes = [
   {

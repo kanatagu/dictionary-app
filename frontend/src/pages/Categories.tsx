@@ -1,9 +1,9 @@
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { Container, Heading, Flex, Button } from '@chakra-ui/react';
 import { FiChevronRight } from 'react-icons/fi';
-import { Loading, Error } from '../components';
-import { CategoryList } from '../features/category/components';
-import { useGetCategories } from '../features/category/hooks';
+import { Loading, Error } from '../components/ui';
+import { CategoryList } from '../components/category';
+import { useGetCategories } from '../hooks/category';
 
 export const CategoriesPage = () => {
   const { data, isLoading, isError, isValidating } = useGetCategories();
@@ -11,8 +11,6 @@ export const CategoriesPage = () => {
   if (isError) {
     return <Error backLink={'/'} />;
   }
-
-  console.log('data', data);
 
   return (
     <Container maxW={{ base: '100%', lg: 'container.sm' }} pt='40px' pb='80px'>

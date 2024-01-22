@@ -8,13 +8,13 @@ import {
   MenuItem,
   Container,
 } from '@chakra-ui/react';
-import { CustomNavLink } from '../../components';
+import { CustomNavLink } from '../../components/layout';
 import {
   MdAccountCircle,
   MdManageAccounts,
   MdOutlineLogout,
 } from 'react-icons/md';
-import { useAuth } from '../../hooks';
+import { useAuth } from '../../hooks/common';
 
 export const Header = () => {
   const navigate = useNavigate();

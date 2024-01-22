@@ -1,6 +1,6 @@
 import { useState, FormEventHandler } from 'react';
 import { useCheckUserPool } from '../hooks';
-import { useAuth } from '../../../hooks';
+import { useAuth } from '../../../hooks/common';
 
 export const useSignUp = () => {
   const [errorMessage, setErrorMessage] = useState('');
