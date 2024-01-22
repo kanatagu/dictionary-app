@@ -5,11 +5,12 @@ import {
   updateMyWord,
   deleteMyWord,
 } from '../controllers/myWord';
+import { verifyToken } from '../middleware/verifyToken';
 
 const router = express.Router();
-router.get('/', getMyWords);
-router.post('/', createMyWord);
-router.put('/:id', updateMyWord);
-router.delete('/:id', deleteMyWord);
+router.get('/', verifyToken, getMyWords);
+router.post('/', verifyToken, createMyWord);
+router.put('/:id', verifyToken, updateMyWord);
+router.delete('/:id', verifyToken, deleteMyWord);
 
 export default router;

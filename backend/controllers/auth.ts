@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jsonwebtoken from 'jsonwebtoken';
+import jwt, { VerifyErrors } from 'jsonwebtoken';
 import userModel from '../models/user';
 
 /**
@@ -35,8 +35,16 @@ export async function createUser(req: Request, res: Response) {
  */
 export async function loginUser(req: Request, res: Response) {
   const { email, password } = req.body;
-  const token = jsonwebtoken.sign({ email }, 'DUMMYKEY');
+
   const user = userModel.users.find((user) => user.email === email);
+
+  const token = jwt.sign(
+    { id: user?.id, email: user?.email },
+    `${process.env.JWT_SECRET_KEY}`,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    }
+  );
 
   if (!user) {
     return res.status(400).json({ message: 'Invalid login information' });
@@ -51,4 +59,33 @@ export async function loginUser(req: Request, res: Response) {
   res.cookie('token', token, { httpOnly: true });
 
   return res.status(200).json({ id: user.id, email: user.email });
+}
+
+/**
+ * @desc     Get User
+ * @route    GET /api/auth/user
+ * @access   Public
+ */
+export function getUser(req: Request, res: Response) {
+  const { user: reqUser } = req;
+  console.log('reqUser', reqUser);
+
+  const user = userModel.users.find((user) => user.id === reqUser?.id);
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  return res.status(200).json({ user });
+}
+
+/**
+ * @desc     Logout user
+ * @route    GET /api/auth/logout
+ * @access   Public
+ */
+export function logoutUser(req: Request, res: Response) {
+  res.clearCookie('token');
+
+  return res.status(200).json({ message: 'Logout successfully' });
 }

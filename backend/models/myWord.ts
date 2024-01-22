@@ -18,6 +18,7 @@ type MyWordType = {
   memo?: string;
   word: WordType;
   category: CategoryType[];
+  userId: string;
 };
 
 class MyWord {
@@ -25,17 +26,20 @@ class MyWord {
   memo?: string;
   word: WordType;
   category: CategoryType[];
+  userId: string;
 
   constructor(
     id: string,
     memo: string,
     word: WordType,
-    category: CategoryType[]
+    category: CategoryType[],
+    userId: string
   ) {
     this.id = id;
     this.memo = memo;
     this.word = word;
     this.category = category;
+    this.userId = userId;
   }
 }
 

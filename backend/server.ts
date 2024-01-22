@@ -1,11 +1,13 @@
 import express from 'express';
-import type { Express, Request, Response } from 'express';
+import type { Express } from 'express';
+import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import categoryRoutes from './routes/category';
 import myWordRoutes from './routes/myWord';
 
+dotenv.config();
 const app: Express = express();
 const PORT = 3001;
 

@@ -8,7 +8,14 @@ import myWordModel from '../models/myWord';
  * @access   Public
  */
 export function getCategories(req: Request, res: Response) {
-  return res.status(200).json(categoryModel.categories);
+  const { user } = req;
+
+  // Filter categories by user
+  const filteredCategories = categoryModel.categories.filter(
+    (category) => category.userId === user.id
+  );
+
+  return res.status(200).json(filteredCategories);
 }
 
 /**
@@ -17,10 +24,15 @@ export function getCategories(req: Request, res: Response) {
  * @access   Public
  */
 export function getCategoryById(req: Request, res: Response) {
+  const { user } = req;
   const { id } = req.params;
-  const category = categoryModel.categories.find(
-    (category) => category.id === id
+
+  // Filter categories by user
+  const filteredCategories = categoryModel.categories.filter(
+    (category) => category.userId === user.id
   );
+
+  const category = filteredCategories.find((category) => category.id === id);
 
   if (!category) {
     return res.status(404).json({ message: 'The category not found' });
@@ -35,6 +47,7 @@ export function getCategoryById(req: Request, res: Response) {
  * @access   Public
  */
 export function createCategory(req: Request, res: Response) {
+  const { user } = req;
   const { name } = req.body;
 
   if (!name) {
@@ -42,7 +55,7 @@ export function createCategory(req: Request, res: Response) {
   }
 
   const categoryId = String(categoryModel.categories.length + 1);
-  const category = new categoryModel.Category(categoryId, name);
+  const category = new categoryModel.Category(categoryId, name, user.id);
   categoryModel.categories.push(category);
 
   return res.status(201).json({ id: categoryId, name });
@@ -54,12 +67,16 @@ export function createCategory(req: Request, res: Response) {
  * @access   Public
  */
 export function updateCategory(req: Request, res: Response) {
-  console.log('req.params', req.params);
+  const { user } = req;
   const { id } = req.params;
   const { name } = req.body;
-  const category = categoryModel.categories.find(
-    (category) => category.id === id
+
+  // Filter categories by user
+  const filteredCategories = categoryModel.categories.filter(
+    (category) => category.userId === user.id
   );
+
+  const category = filteredCategories.find((category) => category.id === id);
 
   if (!category) {
     return res.status(404).json({ message: 'The category not found' });
@@ -87,17 +104,27 @@ export function updateCategory(req: Request, res: Response) {
  * @access   Public
  */
 export function deleteCategory(req: Request, res: Response) {
+  const { user } = req;
   const { id } = req.params;
-  const category = categoryModel.categories.find(
-    (category) => category.id === id
+
+  // Filter categories by user
+  const filteredCategories = categoryModel.categories.filter(
+    (category) => category.userId === user.id
   );
+
+  const category = filteredCategories.find((category) => category.id === id);
 
   if (!category) {
     return res.status(404).json({ message: 'The category not found' });
   }
 
   // Delete category from myItems
-  let newArray = [...myWordModel.myWords];
+  // Filter myItems by user
+  const filteredItems = myWordModel.myWords.filter(
+    (item) => item.userId === user.id
+  );
+
+  let newArray = [...filteredItems];
 
   newArray.forEach((myItem) => {
     const updatedCategoryItems = myItem.category.filter(

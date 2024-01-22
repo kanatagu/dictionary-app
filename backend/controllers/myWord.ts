@@ -8,7 +8,14 @@ import myWordModel from '../models/myWord';
  * @access   Public
  */
 export function getMyWords(req: Request, res: Response) {
-  return res.status(200).json(myWordModel.myWords);
+  const { user } = req;
+
+  // Filter myWords by user
+  const filteredMyWords = myWordModel.myWords.filter(
+    (myWord) => myWord.userId === user.id
+  );
+
+  return res.status(200).json(filteredMyWords);
 }
 
 /**
@@ -17,6 +24,7 @@ export function getMyWords(req: Request, res: Response) {
  * @access   Public
  */
 export function createMyWord(req: Request, res: Response) {
+  const { user } = req;
   const { memo, word, category } = req.body;
 
   if (!word) {
@@ -28,7 +36,13 @@ export function createMyWord(req: Request, res: Response) {
   }
 
   const myWordId = String(myWordModel.myWords.length + 1);
-  const myWord = new myWordModel.MyWord(myWordId, memo, word, category);
+  const myWord = new myWordModel.MyWord(
+    myWordId,
+    memo,
+    word,
+    category,
+    user.id
+  );
   myWordModel.myWords.push(myWord);
 
   return res.status(201).json({ id: myWordId, memo, word, category });
@@ -40,9 +54,16 @@ export function createMyWord(req: Request, res: Response) {
  * @access   Public
  */
 export function updateMyWord(req: Request, res: Response) {
+  const { user } = req;
   const { id } = req.params;
   const { memo, word, category } = req.body;
-  const myWord = myWordModel.myWords.find((myWord) => myWord.id === id);
+
+  // Filter myWords by user
+  const filteredMyWords = myWordModel.myWords.filter(
+    (myWord) => myWord.userId === user.id
+  );
+
+  const myWord = filteredMyWords.find((myWord) => myWord.id === id);
 
   if (!myWord) {
     return res.status(404).json({ message: 'The item not found' });
@@ -61,8 +82,15 @@ export function updateMyWord(req: Request, res: Response) {
  * @access   Public
  */
 export function deleteMyWord(req: Request, res: Response) {
+  const { user } = req;
   const { id } = req.params;
-  const myWord = myWordModel.myWords.find((myItem) => myItem.id === id);
+
+  // Filter myWords by user
+  const filteredMyWords = myWordModel.myWords.filter(
+    (myWord) => myWord.userId === user.id
+  );
+
+  const myWord = filteredMyWords.find((myItem) => myItem.id === id);
 
   if (!myWord) {
     return res.status(404).json({ message: 'The item not found' });
