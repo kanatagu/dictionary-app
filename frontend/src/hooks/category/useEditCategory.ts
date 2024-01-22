@@ -5,6 +5,7 @@ import useSWRMutation from 'swr/mutation';
 import { mutate } from 'swr';
 import { useToast } from '@chakra-ui/react';
 import { updateCategoryApi } from '../../api/category';
+import { isErrorWithMessage } from '../../utils';
 
 export const useEditCategory = (id: string) => {
   const navigate = useNavigate();
@@ -52,14 +53,17 @@ export const useEditCategory = (id: string) => {
 
       navigate('/category');
     } catch (e) {
-      console.error(e);
-      toast({
-        title: 'Error',
-        description: 'Sorry, error has occurred. Try again later.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      if (isErrorWithMessage(e)) {
+        toast({
+          title: 'Error',
+          description:
+            e.response?.data.message ||
+            'Sorry, error has occurred. Try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     }
   };
 

@@ -4,6 +4,7 @@ import { useToast } from '@chakra-ui/react';
 import { MyWordType, CategoryType } from '../../types';
 import { updateMyWordApi } from '../../api/myWords';
 import { useGetMyWords } from '.';
+import { isErrorWithMessage } from '../../utils';
 
 export const useEditMyWord = (item: MyWordType, onClose: () => void) => {
   const toast = useToast();
@@ -63,23 +64,37 @@ export const useEditMyWord = (item: MyWordType, onClose: () => void) => {
       return;
     }
 
-    const arg = {
-      memo: inputMemo,
-      word: item.word,
-      category: checkedCategory,
-    };
+    try {
+      const arg = {
+        memo: inputMemo,
+        word: item.word,
+        category: checkedCategory,
+      };
 
-    await trigger(arg);
+      await trigger(arg);
 
-    toast({
-      title: 'Success!',
-      description: 'Saved changes.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-    refetch();
+      toast({
+        title: 'Success!',
+        description: 'Saved changes.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      onClose();
+      refetch();
+    } catch (e) {
+      if (isErrorWithMessage(e)) {
+        toast({
+          title: 'Error',
+          description:
+            e.response?.data.message ||
+            'Sorry, error has occurred. Try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   return {

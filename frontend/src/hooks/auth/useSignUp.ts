@@ -4,6 +4,7 @@ import useSWRMutation from 'swr/mutation';
 import { useToast } from '@chakra-ui/react';
 import { useAuth } from '.';
 import { signUpApi } from '../../api/auth';
+import { isErrorWithMessage } from '../../utils';
 
 export const useSignUp = () => {
   const navigate = useNavigate();
@@ -55,15 +56,17 @@ export const useSignUp = () => {
         isClosable: true,
       });
     } catch (e) {
-      toast({
-        title: 'Error',
-        description:
-          e.response.data.message ||
-          'Sorry, error has occurred. Try again later.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      if (isErrorWithMessage(e)) {
+        toast({
+          title: 'Error',
+          description:
+            e.response?.data.message ||
+            'Sorry, error has occurred. Try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     }
   };
 

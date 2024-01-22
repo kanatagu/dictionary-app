@@ -2,6 +2,7 @@ import useSWRMutation from 'swr/mutation';
 import { mutate } from 'swr';
 import { useToast } from '@chakra-ui/react';
 import { deleteCategoryApi } from '../../api/category';
+import { isErrorWithMessage } from '../../utils';
 
 export const useDeleteCategory = (id: string, onClose: () => void) => {
   const toast = useToast();
@@ -28,14 +29,17 @@ export const useDeleteCategory = (id: string, onClose: () => void) => {
 
       onClose();
     } catch (e) {
-      console.error(e);
-      toast({
-        title: 'Error',
-        description: 'Sorry, error has occurred. Try again later.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      if (isErrorWithMessage(e)) {
+        toast({
+          title: 'Error',
+          description:
+            e.response?.data.message ||
+            'Sorry, error has occurred. Try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     }
   };
 

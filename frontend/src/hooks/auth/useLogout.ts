@@ -4,6 +4,7 @@ import { mutate } from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { useAuthContext } from '../../providers';
 import { logoutApi } from '../../api/auth';
+import { isErrorWithMessage } from '../../utils';
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -22,15 +23,17 @@ export const useLogout = () => {
       clearAllCache();
       navigate('/login');
     } catch (e) {
-      toast({
-        title: 'Error',
-        description:
-          e.response.data.message ||
-          'Sorry, error has occurred. Try again later.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      if (isErrorWithMessage(e)) {
+        toast({
+          title: 'Error',
+          description:
+            e.response?.data.message ||
+            'Sorry, error has occurred. Try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     }
   };
 
