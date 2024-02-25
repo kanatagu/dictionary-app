@@ -8,7 +8,7 @@ import {
   MenuItem,
   Container,
 } from '@chakra-ui/react';
-import { CustomNavLink } from '../../components/layout';
+import { CustomNavLink } from '.';
 import {
   MdAccountCircle,
   MdManageAccounts,
