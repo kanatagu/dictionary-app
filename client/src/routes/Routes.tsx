@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { ProtectedRoutes, NotAuthenticatedRoutes } from '../routes';
+import { ProtectedRoutes, NotAuthenticatedRoutes } from '.';
 import { ErrorPage } from '../pages';
 
 export const Routes = () => {

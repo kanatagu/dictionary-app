@@ -11,7 +11,7 @@ import {
   useDisclosure,
   Button,
 } from '@chakra-ui/react';
-import { NavList } from '../layout';
+import { NavList } from '.';
 import { useIsMobile } from '../../hooks/common';
 import { CategoryType } from '../../types';
 
