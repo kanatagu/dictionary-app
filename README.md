@@ -2,6 +2,8 @@
 
 This app lets users create their own word lists with categories using a dictionary sourced from UrbanDictionary through a free API. Right now, it's just storing data in memory, but I'm transitioning to a MongoDB database.
 
+<img width="1463" alt="Screenshot 2024-02-24 at 9 41 53 PM" src="https://github.com/kanatagu/dictionary-app/assets/66394413/ef114afb-0a81-4ed1-a6ca-154211744b52">
+
 ## Features
 * Authentication
 * Show random UrbanDictionary words
